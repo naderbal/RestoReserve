@@ -1,4 +1,4 @@
-package com.example.restoreserve.sections.restaurant;
+package com.example.restoreserve.sections.customer.restaurant.date;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

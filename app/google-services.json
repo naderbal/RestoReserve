@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "498965705170",
+    "firebase_url": "https://restoreserve-8ad01.firebaseio.com",
+    "project_id": "restoreserve-8ad01",
+    "storage_bucket": "restoreserve-8ad01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498965705170:android:4d8b952211a655f2",
+        "android_client_info": {
+          "package_name": "com.example.restoreserve"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "498965705170-toem11tsc78hp8tt4qfeea9s99np6qdd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.restoreserve",
+            "certificate_hash": "b423c5a416734b3298b7bf8a720ea7d0790f3164"
+          }
+        },
+        {
+          "client_id": "498965705170-0dgrm9anbkt0dl18ncqlbqjdt37j5g04.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTsObZnYe87vDIjTGeBpcZQxdRbmhYZig"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "498965705170-0dgrm9anbkt0dl18ncqlbqjdt37j5g04.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

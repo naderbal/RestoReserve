@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_normal"
+        android:layout_marginTop="@dimen/content_margin_large"
+        android:text="Edit Profile"/>
+
+    <View
+        style="@style/HorizontalSeparatorLight"
+        android:layout_marginTop="@dimen/content_margin_large"/>
+
+    <TextView
+        android:id="@+id/tvLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_normal"
+        android:layout_marginTop="@dimen/content_margin_large"
+        android:text="Log Out"/>
+
+    <View
+        style="@style/HorizontalSeparatorLight"
+        android:layout_marginTop="@dimen/content_margin_large"/>
+
+    <TextView
+        android:id="@+id/tvAboutUs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_normal"
+        android:layout_marginTop="@dimen/content_margin_large"
+        android:text="About Us"/>
+
+    <View
+        style="@style/HorizontalSeparatorLight"
+        android:layout_marginTop="@dimen/content_margin_large"/>
+
+</LinearLayout>

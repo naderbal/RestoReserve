@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="content_margin_normal">8dp</dimen>
+    <dimen name="content_margin_large">16dp</dimen>
+    <dimen name="ts_big">18sp</dimen>
+</resources>

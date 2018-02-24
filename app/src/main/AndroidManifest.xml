@@ -8,14 +8,35 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:screenOrientation="portrait"
+        android:name=".RestoReserve"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".sections.splash.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".sections.customer.home.HomeActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".sections.customer.restaurant.RestaurantActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".sections.restaurant.RestaurantHomeActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".sections.authentication.welcome.WelcomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".sections.authentication.sign_up.SignUpActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".sections.customer.home.settings.EditProfileActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".sections.customer.home.settings.AboutUsActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
