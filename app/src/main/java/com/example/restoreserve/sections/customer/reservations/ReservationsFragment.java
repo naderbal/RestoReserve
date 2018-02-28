@@ -160,9 +160,8 @@ public class ReservationsFragment extends BaseFragment {
         return reservationArray;
     }
 
-
     public void getReservations() {
         ArrayList<Reservation> reservations = ReservationsManager.getInstance().getReservations();
-        adapter.addReservations(reservations);
+        adapter.replaceReservations(reservations);
     }
 }

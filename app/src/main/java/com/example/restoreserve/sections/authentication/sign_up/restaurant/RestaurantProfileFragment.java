@@ -306,7 +306,10 @@ public class RestaurantProfileFragment extends BaseFragment {
             showToast("Please set closing hour");
             return false;
         }
-
+        if (!InputValidationUtils.validateWebsite(restaurant.getWebsite())) {
+            showToast("Please enter a valid website");
+            return false;
+        }
         if (restaurant.getTables() == null) {
             showToast("Please set tables");
             return false;

@@ -298,11 +298,10 @@ public class RestaurantActivity extends BaseActivity {
 
     private void fetchReservations() {
         User user = AppSessionManager.getInstance().getUser();
-        final String userId = user.getId();
         String date = vDate.getValue();
         // set tables loading
         pbTablesLoading.setVisibility(View.VISIBLE);
-        ReservationsProvider.rxGetReservationsAtDate(restaurant.getId(), userId, date)
+        ReservationsProvider.rxGetReservationsAtDate(restaurant.getId(), date)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new SingleSubscriber<ArrayList<Reservation>>() {

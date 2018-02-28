@@ -60,7 +60,11 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void onError(Throwable error) {
                 dismissProgressDialog();
-                Toast.makeText(getBaseContext(), "Registration Failed", Toast.LENGTH_SHORT).show();
+                if (error instanceof AppAuthenticationManager.PhoneNumberAlreadyExistsException) {
+                    showToast("User with this phone number already exists");
+                } else {
+                    Toast.makeText(getBaseContext(), "Registration Failed", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -82,7 +86,11 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void onError(Throwable error) {
                 dismissProgressDialog();
-                Toast.makeText(getBaseContext(), "Registration Failed", Toast.LENGTH_SHORT).show();
+                if (error instanceof AppAuthenticationManager.PhoneNumberAlreadyExistsException) {
+                    showToast("Restaurant with this phone number already exists");
+                } else {
+                    Toast.makeText(getBaseContext(), "Registration Failed", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

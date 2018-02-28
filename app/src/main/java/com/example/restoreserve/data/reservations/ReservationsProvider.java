@@ -104,13 +104,12 @@ public class ReservationsProvider {
         });
     }
 
-    public static Single<ArrayList<Reservation>> rxGetReservationsAtDate(String restId, String userId, String date) {
+    public static Single<ArrayList<Reservation>> rxGetReservationsAtDate(String restId, String date) {
         final FirebaseFirestore instance = FirestoreManager.getInstance().getFirestoreInstance();
         return Single.create(singleSubscriber -> {
             instance
                     .collection(StorageKeys.RESERVATIONS)
                     .whereEqualTo(StorageKeys.RESTO_ID, restId)
-                    .whereEqualTo(StorageKeys.CUSTOMER_ID, userId)
                     .whereEqualTo(StorageKeys.DATE, date)
                     .get()
                     .addOnCompleteListener(task -> {

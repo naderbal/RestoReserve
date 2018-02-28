@@ -113,7 +113,6 @@ public class RestaurantReservationsFragment extends BaseFragment {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
                         dismissProgressDialog();
-                        adapter.removeReservation(reservation);
                         showToast("Reservation Confirmed");
                         reservation.setConfirmed(true);
                         adapter.notifyDataSetChanged();
@@ -133,7 +132,7 @@ public class RestaurantReservationsFragment extends BaseFragment {
     @NonNull
     private ArrayList<Reservation> convertReservationsToArray(SortedList<Reservation> reservations) {
         ArrayList<Reservation> reservationArray = new ArrayList<>();
-        for (int i = 0; i< reservations.size(); i++) {
+        for (int i = 0; i < reservations.size(); i++) {
             reservationArray.add(reservations.get(i));
         }
         return reservationArray;

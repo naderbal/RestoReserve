@@ -3,18 +3,12 @@ package com.example.restoreserve.data.session;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
+import com.example.restoreserve.RestoReserve;
 import com.example.restoreserve.data.caching.SharedPreferencesCache;
 import com.example.restoreserve.data.reservations.ReservationsManager;
-import com.example.restoreserve.data.reservations.model.Reservation;
 import com.example.restoreserve.data.restaurant.model.Restaurant;
 import com.example.restoreserve.data.user.User;
 import com.google.firebase.auth.FirebaseAuth;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import rx.Subscriber;
 import rx.subjects.PublishSubject;
@@ -56,12 +50,11 @@ public class AppSessionManager {
      * otherwise.
      */
     public boolean isUserLoggedIn() {
-        return user != null;
+        return getCache().getIsCustomer();
     }
 
-
     public boolean isRestaurantLoggedIn() {
-        return restaurant != null;
+        return getCache().getIsRestaurant();
     }
 
     /**
@@ -70,10 +63,19 @@ public class AppSessionManager {
      */
     public void setUser(User user) {
         this.user = user;
+        getCache().setIsCustomer(true);
+        getCache().setIsRestaurant(false);
     }
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+        getCache().setIsRestaurant(true);
+        getCache().setIsCustomer(false);
+    }
+
+    public void clearCache() {
+        getCache().setIsRestaurant(false);
+        getCache().setIsCustomer(false);
     }
 
     /**
@@ -92,9 +94,16 @@ public class AppSessionManager {
     public void logout() {
         this.user = null;
         this.restaurant = null;
+        getCache().setIsRestaurant(false);
+        getCache().setIsCustomer(false);
         sessionTracker.onNext(SessionState.LOGGED_OUT);
         FirebaseAuth.getInstance().signOut();
         ReservationsManager.getInstance().clearReservations();
+    }
+
+    private Cache getCache() {
+        Context context = RestoReserve.getInstance().getApplicationContext();
+        return new Cache(context);
     }
 
     /**
@@ -103,6 +112,7 @@ public class AppSessionManager {
     private static class Cache extends SharedPreferencesCache {
         private final String PREF_NAME = "session_manager";
         private final String IS_CUSTOMER = "is_customer";
+        private final String IS_RESTAURANT = "is_restaurant";
 
         private Cache(Context context) {
             super(context);
@@ -113,12 +123,20 @@ public class AppSessionManager {
             return PREF_NAME;
         }
 
-        private void setIS_CUSTOMER(boolean isCustomer) {
+        private void setIsCustomer(boolean isCustomer) {
             storeBoolean(IS_CUSTOMER, isCustomer);
         }
 
-        private Boolean getItems() {
+        private Boolean getIsCustomer() {
            return getBoolean(IS_CUSTOMER, true);
+        }
+
+        private Boolean getIsRestaurant() {
+           return getBoolean(IS_RESTAURANT, true);
+        }
+
+        private void setIsRestaurant(boolean isRestaurant) {
+            storeBoolean(IS_RESTAURANT, isRestaurant);
         }
     }
 }

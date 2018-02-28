@@ -8,7 +8,9 @@ import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.data.user.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import rx.Single;
 
@@ -54,9 +56,14 @@ public class AppAuthenticationManager {
         String email = registrationUser.getEmail();
         String password = registrationUser.getPassword();
         // auth request
-        Single<String> singleAuthRegister = rxFirebaseRegister(email, password);
-        // flat
-        return singleAuthRegister.flatMap(id -> rxStoreUser(id, registrationUser));
+        return rxFirebaseCheckUserCredentials(registrationUser.getPhoneNumber(), registrationUser.getName())
+                .flatMap(aBoolean -> {
+                    if (aBoolean) {
+                        return rxFirebaseRegister(email, password).flatMap(id -> rxStoreUser(id, registrationUser));
+                    } else {
+                        return Single.error(new PhoneNumberAlreadyExistsException());
+                    }
+                });
     }
 
     /**
@@ -67,10 +74,14 @@ public class AppAuthenticationManager {
     public static Single<Restaurant> rxRegisterRestaurant(@NonNull Restaurant registrationUser, @NonNull String password) {
         // get email/password
         String email = registrationUser.getEmail();
-        // auth request
-        Single<String> singleAuthRegister = rxFirebaseRegister(email, password);
-        // flat
-        return singleAuthRegister.flatMap(id -> rxStoreRestaurant(id, registrationUser));
+        return rxFirebaseCheckRestaurantCredentials(registrationUser.getPhoneNumber())
+                .flatMap(aBoolean -> {
+                    if (aBoolean) {
+                        return rxFirebaseRegister(email, password).flatMap(id -> rxStoreRestaurant(id, registrationUser));
+                    } else {
+                        return Single.error(new PhoneNumberAlreadyExistsException());
+                    }
+                });
     }
 
     /**
@@ -99,6 +110,76 @@ public class AppAuthenticationManager {
                             } else {
                                 Exception exception = task.getException();
                                 singleSubscriber.onError(exception);
+                            }
+                        })
+        );
+    }
+
+    /**
+     * Returns a {@link Single} that will execute a {@link FirebaseAuth} registration
+     * request. Upon success, it will emit the registered {@link FirebaseUser} uid.
+     */
+    private static Single<Boolean> rxFirebaseCheckUserCredentials(@NonNull String phoneNumber, String name) {
+        return Single.create(singleSubscriber ->
+                // trigger Firebase registration request
+                FirestoreManager.getInstance()
+                        .getFirestoreInstance()
+                        .collection("users")
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            // check if resulting task was successful
+                            if (task.isSuccessful()) {
+                                Iterable<DocumentSnapshot> iterable = task.getResult().getDocuments();
+                                for (DocumentSnapshot snapshot: iterable) {
+                                    // generate user
+                                    User user = new User(snapshot.getId(), snapshot);
+                                    if (user.getPhoneNumber().equals(phoneNumber)) {
+                                        singleSubscriber.onError(new PhoneNumberAlreadyExistsException());
+                                        return;
+                                    }
+                                    if (user.getName().equals(name)) {
+                                        singleSubscriber.onError(new NameAlreadyExistsException());
+                                        return;
+                                    }
+                                }
+                                singleSubscriber.onSuccess(true);
+                            } else {
+                                singleSubscriber.onSuccess(false);
+                            }
+                        })
+        );
+    }
+
+    /**
+     * Returns a {@link Single} that will execute a {@link FirebaseAuth} registration
+     * request. Upon success, it will emit the registered {@link FirebaseUser} uid.
+     */
+    private static Single<Boolean> rxFirebaseCheckRestaurantCredentials(@NonNull String phoneNumber) {
+        return Single.create(singleSubscriber ->
+                // trigger Firebase registration request
+                FirestoreManager.getInstance()
+                        .getFirestoreInstance()
+                        .collection("restaurants")
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            // check if resulting task was successful
+                            if (task.isSuccessful()) {
+                                Iterable<DocumentSnapshot> iterable = task.getResult().getDocuments();
+                                for (DocumentSnapshot snapshot: iterable) {
+                                    // generate user
+                                    Restaurant restaurant = new Restaurant(snapshot);
+                                    if (restaurant.getPhoneNumber().equals(phoneNumber)) {
+                                        singleSubscriber.onError(new PhoneNumberAlreadyExistsException());
+                                        return;
+                                    }
+                                    if (restaurant.getPhoneNumber().equals(phoneNumber)) {
+                                        singleSubscriber.onError(new NameAlreadyExistsException());
+                                        return;
+                                    }
+                                }
+                                singleSubscriber.onSuccess(true);
+                            } else {
+                                singleSubscriber.onSuccess(false);
                             }
                         })
         );
@@ -279,7 +360,7 @@ public class AppAuthenticationManager {
             FirestoreManager.getInstance().getFirestoreInstance()
                     .collection("users")
                     .document(id)
-                    .set(updatedUser.toMap(id))
+                    .set(updatedUser.toMap(id), SetOptions.merge())
                     .addOnCompleteListener(task -> {
                         // check if profile set
                         if (task.isSuccessful()) {
@@ -343,6 +424,18 @@ public class AppAuthenticationManager {
     public static class UserNotFoundException extends Exception {
         public UserNotFoundException() {
             super("User not found");
+        }
+    }
+
+    public static class PhoneNumberAlreadyExistsException extends Exception {
+        public PhoneNumberAlreadyExistsException() {
+            super("phone number already exists");
+        }
+    }
+
+    public static class NameAlreadyExistsException extends Exception {
+        public NameAlreadyExistsException() {
+            super("Name already exists");
         }
     }
 }

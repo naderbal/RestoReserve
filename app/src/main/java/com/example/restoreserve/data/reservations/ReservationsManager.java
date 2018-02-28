@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import rx.Subscriber;
+import rx.subjects.PublishSubject;
 import rx.subjects.ReplaySubject;
 
 /**
@@ -24,7 +25,7 @@ public class ReservationsManager {
 
     private static ReservationsManager cartManager;
     private ArrayList<Reservation> items;
-    private ReplaySubject<Integer> reservationsTracker;
+    private PublishSubject<Integer> reservationsTracker;
 
     private ReservationsManager() {
         init();
@@ -40,7 +41,7 @@ public class ReservationsManager {
     private void init() {
         Cache cache  = getCache();
         items = cache.getItems();
-        reservationsTracker = ReplaySubject.create();
+        reservationsTracker = PublishSubject.create();
         // emit items size
         reservationsTracker.onNext(items.size());
     }

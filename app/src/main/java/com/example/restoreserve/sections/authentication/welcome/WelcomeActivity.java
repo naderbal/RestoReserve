@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.restoreserve.R;
 import com.example.restoreserve.base.BaseActivity;
+import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.sections.authentication.sign_up.SignUpActivity;
 
 
@@ -37,6 +38,7 @@ public class WelcomeActivity extends BaseActivity implements WelcomeContract.Vie
         setPresenter(new WelcomePresenter(this));
         // init views
         initViews();
+        AppSessionManager.getInstance().clearCache();
     }
 
     private void initViews() {

@@ -2,6 +2,7 @@ package com.example.restoreserve.utils;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Patterns;
 
 import com.example.restoreserve.utils.ui.CustomInputSelectorView;
 
@@ -54,5 +55,9 @@ public class InputValidationUtils {
 
     public static boolean validateFloor(String floor) {
         return floor.length() >= 1;
+    }
+
+    public static boolean validateWebsite(String website) {
+        return Patterns.WEB_URL.matcher(website).matches();
     }
 }

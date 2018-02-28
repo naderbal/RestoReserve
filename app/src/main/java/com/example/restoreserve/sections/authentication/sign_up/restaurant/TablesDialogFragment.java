@@ -91,9 +91,19 @@ public class TablesDialogFragment extends DialogFragment {
         if (tableName.isEmpty()) {
             Toast.makeText(getContext(), "Please enter table name", Toast.LENGTH_SHORT).show();
             return;
+        } else {
+            for (Table table : tables) {
+                if (table.getId().equals(tableName)) {
+                    Toast.makeText(getContext(), "Table with this name already exists", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
         }
         if (count == 0) {
             Toast.makeText(getContext(), "Please enter seats count", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (count > 10) {
+            Toast.makeText(getContext(), "Seats count shouldn't exceed 10", Toast.LENGTH_SHORT).show();
             return;
         }
         Table table = new Table(tableName, count);
@@ -110,7 +120,6 @@ public class TablesDialogFragment extends DialogFragment {
         void submit(ArrayList<Table> tables);
         void dismiss();
     }
-
 
     class TablesAdapter extends RecyclerView.Adapter<TablesAdapter.TableViewHolder> {
         ArrayList<Table> tables;

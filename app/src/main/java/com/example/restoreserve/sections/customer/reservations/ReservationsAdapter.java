@@ -65,7 +65,7 @@ public class ReservationsAdapter extends RecyclerView.Adapter<ReservationsAdapte
 
     @Override
     public TableViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_reservation, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_reservation, parent, false);
         // create and return view holder
         return new TableViewHolder(view);
     }
@@ -81,7 +81,8 @@ public class ReservationsAdapter extends RecyclerView.Adapter<ReservationsAdapte
         return (reservations != null ? reservations.size() : 0);
     }
 
-    public void addReservations(ArrayList<Reservation> reservations) {
+    public void replaceReservations(ArrayList<Reservation> reservations) {
+        this.reservations.clear();
         this.reservations.addAll(reservations);
         notifyDataSetChanged();
     }
