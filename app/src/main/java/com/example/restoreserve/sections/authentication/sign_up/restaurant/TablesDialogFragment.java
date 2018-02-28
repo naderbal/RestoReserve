@@ -74,6 +74,11 @@ public class TablesDialogFragment extends DialogFragment {
         // listeners
         btnAddTable.setOnClickListener(v -> handleAddTableClicked());
         btnSubmit.setOnClickListener(v -> handleSubmitclicked());
+        btnCancel.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.dismiss();
+            }
+        });
     }
 
     private void handleSubmitclicked() {
@@ -85,17 +90,26 @@ public class TablesDialogFragment extends DialogFragment {
 
     private void handleAddTableClicked() {
         final String tableName = etTableName.getText().toString().trim();
-        final String seatsCount = etSeatsCount.getText().toString().trim();
-        int count = Integer.parseInt(seatsCount);
+        final String strSeatsCount = etSeatsCount.getText().toString().trim();
+        int count = 0;
+        try {
+        count = Integer.parseInt(strSeatsCount);
+
+        } catch (Exception e) {
+            // do nothing
+        }
 
         if (tableName.isEmpty()) {
             Toast.makeText(getContext(), "Please enter table name", Toast.LENGTH_SHORT).show();
             return;
         } else {
-            for (Table table : tables) {
-                if (table.getId().equals(tableName)) {
-                    Toast.makeText(getContext(), "Table with this name already exists", Toast.LENGTH_SHORT).show();
-                    return;
+            ArrayList<Table> arrayTables = adapter.getTables();
+            if (arrayTables != null) {
+                for (Table table : arrayTables) {
+                    if (table.getId().equals(tableName)) {
+                        Toast.makeText(getContext(), "Table with this name already exists", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
             }
         }

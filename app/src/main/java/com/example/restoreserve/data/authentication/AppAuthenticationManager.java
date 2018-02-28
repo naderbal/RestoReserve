@@ -74,7 +74,7 @@ public class AppAuthenticationManager {
     public static Single<Restaurant> rxRegisterRestaurant(@NonNull Restaurant registrationUser, @NonNull String password) {
         // get email/password
         String email = registrationUser.getEmail();
-        return rxFirebaseCheckRestaurantCredentials(registrationUser.getPhoneNumber())
+        return rxFirebaseCheckRestaurantCredentials(registrationUser.getPhoneNumber(), registrationUser.getName())
                 .flatMap(aBoolean -> {
                     if (aBoolean) {
                         return rxFirebaseRegister(email, password).flatMap(id -> rxStoreRestaurant(id, registrationUser));
@@ -154,7 +154,7 @@ public class AppAuthenticationManager {
      * Returns a {@link Single} that will execute a {@link FirebaseAuth} registration
      * request. Upon success, it will emit the registered {@link FirebaseUser} uid.
      */
-    private static Single<Boolean> rxFirebaseCheckRestaurantCredentials(@NonNull String phoneNumber) {
+    private static Single<Boolean> rxFirebaseCheckRestaurantCredentials(@NonNull String phoneNumber, String name) {
         return Single.create(singleSubscriber ->
                 // trigger Firebase registration request
                 FirestoreManager.getInstance()
@@ -168,11 +168,13 @@ public class AppAuthenticationManager {
                                 for (DocumentSnapshot snapshot: iterable) {
                                     // generate user
                                     Restaurant restaurant = new Restaurant(snapshot);
-                                    if (restaurant.getPhoneNumber().equals(phoneNumber)) {
+                                    final String phoneNumber1 = restaurant.getPhoneNumber();
+                                    final String name1 = restaurant.getName();
+                                    if (phoneNumber1 !=null && phoneNumber1.equals(phoneNumber)) {
                                         singleSubscriber.onError(new PhoneNumberAlreadyExistsException());
                                         return;
                                     }
-                                    if (restaurant.getPhoneNumber().equals(phoneNumber)) {
+                                    if (name1 != null && name1.equals(name)) {
                                         singleSubscriber.onError(new NameAlreadyExistsException());
                                         return;
                                     }

@@ -9,61 +9,72 @@
     android:paddingEnd="@dimen/content_margin_large"
     android:paddingTop="@dimen/content_margin_large">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvTables"
+    <ScrollView
         android:layout_width="match_parent"
-        android:minHeight="100dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+        <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/etTableName"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/content_margin_large"
-            android:hint="Table name"
-            android:inputType="text"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvTables"
+            android:layout_width="match_parent"
+            android:minHeight="60dp"
+            android:layout_height="wrap_content"/>
 
-        <EditText
-            android:id="@+id/etSeatsCount"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/content_margin_large"
-            android:inputType="number"
-            android:hint="Seats count"/>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnAddTable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/content_margin_large"
-        android:layout_gravity="center_horizontal"
-        android:text="Add TAble"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp">
-
-        <Button
-            android:id="@+id/btnCancel"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dismiss"/>
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/etTableName"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/content_margin_large"
+                android:hint="Table name"
+                android:inputType="text"/>
+
+            <EditText
+                android:id="@+id/etSeatsCount"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/content_margin_large"
+                android:inputType="number"
+                android:hint="Seats count"/>
+        </LinearLayout>
 
         <Button
-            android:id="@+id/btnSubmit"
+            android:id="@+id/btnAddTable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/content_margin_large"
-            android:text="Submit"/>
+            android:layout_marginTop="@dimen/content_margin_large"
+            android:layout_gravity="center_horizontal"
+            android:text="Add TAble"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp">
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dismiss"/>
+
+            <Button
+                android:id="@+id/btnSubmit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/content_margin_large"
+                android:text="Submit"/>
+        </LinearLayout>
     </LinearLayout>
+    </ScrollView>
 </LinearLayout>
