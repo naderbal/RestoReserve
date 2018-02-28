@@ -29,4 +29,5 @@ public class StorageKeys {
     public static final String WEBSITE = "website";
     public static final String ADDRESS = "address";
     public static final String BRANCH = "branch";
+    public static final String WAITINLIST = "waitinglists";
 }

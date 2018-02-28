@@ -20,8 +20,10 @@ import com.example.restoreserve.data.reservations.ReservationsProvider;
 import com.example.restoreserve.data.reservations.model.Reservation;
 import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.data.user.User;
+import com.example.restoreserve.data.waitinglist.WaitinglistManager;
 import com.example.restoreserve.sections.customer.home.settings.SettingsFragment;
 import com.example.restoreserve.sections.customer.reservations.ReservationsFragment;
+import com.example.restoreserve.sections.customer.waitinglist.WaitinglistFragment;
 import com.example.restoreserve.utils.DateHelper;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
     // fragments
     private RestaurantsListingFragment restaurantsListingFragment;
     private ReservationsFragment reservationsFragment;
+    private WaitinglistFragment waitingListFragment;
     private SettingsFragment settingsFragment;
 
     @Override
@@ -51,6 +54,33 @@ public class HomeActivity extends AppCompatActivity {
         setupPager();
         subscribeToReservations();
         subscribeToSession();
+        subscribeToWaitingList();
+        setWaitingListInitialValue();
+    }
+
+    private void setWaitingListInitialValue() {
+        final int size = WaitinglistManager.getInstance().getSize();
+        bottomNavigation.setNotification(String.valueOf(size), 2);
+    }
+
+    private void subscribeToWaitingList() {
+        WaitinglistManager.getInstance().subscribeToTracker(new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("da");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                final String s = e.toString();
+                System.out.println(s);
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                bottomNavigation.setNotification(String.valueOf(integer), 2);
+            }
+        });
     }
 
     private void subscribeToSession() {
@@ -149,6 +179,7 @@ public class HomeActivity extends AppCompatActivity {
     private void initFragments() {
         restaurantsListingFragment = RestaurantsListingFragment.newInstance();
         reservationsFragment = ReservationsFragment.newInstance();
+        waitingListFragment = WaitinglistFragment.newInstance();
         settingsFragment = SettingsFragment.newInstance();
     }
 
@@ -158,13 +189,15 @@ public class HomeActivity extends AppCompatActivity {
 
         AHBottomNavigationItem item1 = new AHBottomNavigationItem("Restaurants", R.drawable.ic_home_white_24dp);
         AHBottomNavigationItem item2 = new AHBottomNavigationItem("Reservations", R.drawable.ic_local_library_white_24dp);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Settings", R.drawable.ic_settings_white_24dp);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Waiting List", R.drawable.ic_dehaze_white_24dp);
+        AHBottomNavigationItem item4 = new AHBottomNavigationItem("Settings", R.drawable.ic_settings_white_24dp);
 
         ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
 
         bottomNavigationItems.add(item1);
         bottomNavigationItems.add(item2);
         bottomNavigationItems.add(item3);
+        bottomNavigationItems.add(item4);
 
         bottomNavigation.setAccentColor(ContextCompat.getColor(getBaseContext(), R.color.colorAccent));
         bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
@@ -183,7 +216,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupPager() {
         SectionsPagerAdapter pagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(pagerAdapter);
         // set view pager item as current section
         viewPager.setCurrentItem(0, false);
@@ -198,6 +231,8 @@ public class HomeActivity extends AppCompatActivity {
             return restaurantsListingFragment;
         } else if (position == 1) {
             return reservationsFragment;
+        } else if (position == 2){
+            return waitingListFragment;
         } else {
             return settingsFragment;
         }
@@ -219,7 +254,7 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     }
 }

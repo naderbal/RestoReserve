@@ -1,7 +1,6 @@
 package com.example.restoreserve.sections.customer.waitinglist;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.restoreserve.R;
-import com.example.restoreserve.data.reservations.model.Reservation;
+import com.example.restoreserve.data.waitinglist.Waitinglist;
 
 import java.util.ArrayList;
 
@@ -19,15 +18,15 @@ import java.util.ArrayList;
  */
 public class WaitinglistAdapter extends RecyclerView.Adapter<WaitinglistAdapter.TableViewHolder> {
     private Context mContext;
-    private SortedList<Reservation> reservations;
-    private OnReservationsListener listener;
+    private SortedList<Waitinglist> waitlists;
+    private OnWaitingListener listener;
 
-    public WaitinglistAdapter(Context mContext, OnReservationsListener listener) {
+    public WaitinglistAdapter(Context mContext, OnWaitingListener listener) {
         this.mContext = mContext;
         this.listener = listener;
-        reservations = new SortedList<>(Reservation.class, new SortedList.Callback<Reservation>() {
+        waitlists = new SortedList<>(Waitinglist.class, new SortedList.Callback<Waitinglist>() {
             @Override
-            public int compare(Reservation o1, Reservation o2) {
+            public int compare(Waitinglist o1, Waitinglist o2) {
                 return 0;
             }
 
@@ -37,12 +36,12 @@ public class WaitinglistAdapter extends RecyclerView.Adapter<WaitinglistAdapter.
             }
 
             @Override
-            public boolean areContentsTheSame(Reservation oldItem, Reservation newItem) {
+            public boolean areContentsTheSame(Waitinglist oldItem, Waitinglist newItem) {
                 return oldItem.getId().equals(newItem.getId());
             }
 
             @Override
-            public boolean areItemsTheSame(Reservation item1, Reservation item2) {
+            public boolean areItemsTheSame(Waitinglist item1, Waitinglist item2) {
                 return item1.getId().equals(item2.getId());
             }
 
@@ -65,36 +64,36 @@ public class WaitinglistAdapter extends RecyclerView.Adapter<WaitinglistAdapter.
 
     @Override
     public TableViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_reservation, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_waiting_list, parent, false);
         // create and return view holder
         return new TableViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(TableViewHolder holder, int position) {
-        final Reservation reservation = reservations.get(position);
+        final Waitinglist reservation = waitlists.get(position);
         holder.bind(reservation);
     }
 
     @Override
     public int getItemCount() {
-        return (reservations != null ? reservations.size() : 0);
+        return (waitlists != null ? waitlists.size() : 0);
     }
 
-    public void replaceReservations(ArrayList<Reservation> reservations) {
-        this.reservations.clear();
-        this.reservations.addAll(reservations);
+    public void replaceWaitinglist(ArrayList<Waitinglist> reservations) {
+        this.waitlists.clear();
+        this.waitlists.addAll(reservations);
         notifyDataSetChanged();
     }
 
-    public void removeReservation(Reservation reservation) {
+    public void removeReservation(Waitinglist reservation) {
         if (reservation != null) {
-            reservations.remove(reservation);
+            waitlists.remove(reservation);
         }
     }
 
-    public SortedList<Reservation> getReservations() {
-        return reservations;
+    public SortedList<Waitinglist> getWaitlists() {
+        return waitlists;
     }
 
     public class TableViewHolder extends RecyclerView.ViewHolder{
@@ -110,28 +109,14 @@ public class WaitinglistAdapter extends RecyclerView.Adapter<WaitinglistAdapter.
             tvTime = itemView.findViewById(R.id.tvTime);
         }
 
-        public void bind(Reservation res) {
+        public void bind(Waitinglist res) {
             tvRestaurant.setText(res.getRestoName());
             tvDate.setText(res.getDate());
             tvTime.setText(res.getTime());
-
-            // check reservation confirmed
-            if(res.isConfirmed()) {
-                // confirmed show green bg
-                vContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.reservation_confirmed_bg));
-            } else {
-                // show default background and set click listener on container
-                vContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.reservation_default_bg));
-                vContainer.setOnClickListener(v -> {
-                    if (listener != null) {
-                        listener.onReservationClicked(res);
-                    }
-                });
-            }
         }
     }
 
-    public interface OnReservationsListener {
-        void onReservationClicked(Reservation reservation);
+    public interface OnWaitingListener {
+        void onReservationClicked(Waitinglist waitinglist);
     }
 }

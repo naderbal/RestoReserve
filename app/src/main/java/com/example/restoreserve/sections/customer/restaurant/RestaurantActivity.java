@@ -18,6 +18,9 @@ import com.example.restoreserve.data.reservations.model.Table;
 import com.example.restoreserve.data.restaurant.model.Restaurant;
 import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.data.user.User;
+import com.example.restoreserve.data.waitinglist.Waitinglist;
+import com.example.restoreserve.data.waitinglist.WaitinglistManager;
+import com.example.restoreserve.data.waitinglist.WaitinglistProvider;
 import com.example.restoreserve.sections.customer.restaurant.tables_listing.TablesAdapter;
 import com.example.restoreserve.utils.ui.CustomInputSelectorView;
 import com.example.restoreserve.utils.DateHelper;
@@ -45,6 +48,7 @@ public class RestaurantActivity extends BaseActivity {
     public static final String EXTRA_RESTAURANT = "restaurant";
     CustomInputSelectorView vDate, vTime;
     Button btnSubmit;
+    Button btnWaitinglist;
     Restaurant restaurant;
     RecyclerView rvTables;
     ProgressBar pbTablesLoading;
@@ -64,11 +68,44 @@ public class RestaurantActivity extends BaseActivity {
         vDate = findViewById(R.id.vDate);
         vTime = findViewById(R.id.vTime);
         btnSubmit = findViewById(R.id.btnSubmit);
+        btnWaitinglist = findViewById(R.id.btnWaitinglist);
         pbTablesLoading = findViewById(R.id.pbTablesLoading);
         // click listeners
         vDate.setOnClickListener(v -> openDate());
         vTime.setOnClickListener(v -> openTime());
         rvTables = findViewById(R.id.rvTables);
+        btnWaitinglist.setOnClickListener(v -> handleWaitinglistClicked());
+    }
+
+    private void handleWaitinglistClicked() {
+        String customerId = AppSessionManager.getInstance().getUser().getId();
+        String restoId = restaurant.getId();
+        String restoName = restaurant.getName();
+        final String date = vDate.getValue();
+        final String time = vTime.getValue();
+        btnWaitinglist.setVisibility(View.GONE);
+        showProgressDialog("Loading");
+        Waitinglist waitinglist = new Waitinglist(customerId, restoId, restoName, date, time);
+        WaitinglistProvider.rxAddToWaitinglist(waitinglist)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleSubscriber<String>() {
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissProgressDialog();
+                        showToast("Something went wrong");
+                        btnWaitinglist.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onSuccess(String s) {
+                        showToast("Added to waiting list");
+                        dismissProgressDialog();
+                        Waitinglist waitinglist1 = new Waitinglist(s, waitinglist);
+                        WaitinglistManager.getInstance().addWaitinglist(waitinglist);
+                    }
+                });
     }
 
     private void configureListing() {
@@ -325,13 +362,21 @@ public class RestaurantActivity extends BaseActivity {
         if (reservedTables != null) {
             // add new tables
             tablesAdapter.addTables(reservedTables);
+            checkAllReserved(reservedTables);
         }
     }
 
-    private ArrayList<ReservedTable> getAllTablesAvailableAtTime(Restaurant restaurant, ArrayList<Reservation> reservations, String timeToBeReserved) {
-        final String openingHour = restaurant.getOpeningHour();
-        final String closingHour = restaurant.getClosingHour();
+    private void checkAllReserved(ArrayList<ReservedTable> reservedTables) {
+        for (ReservedTable reservedTable : reservedTables) {
+            if (!reservedTable.isReserved()) {
+                btnWaitinglist.setVisibility(View.GONE);
+                return;
+            }
+        }
+        btnWaitinglist.setVisibility(View.VISIBLE);
+    }
 
+    private ArrayList<ReservedTable> getAllTablesAvailableAtTime(Restaurant restaurant, ArrayList<Reservation> reservations, String timeToBeReserved) {
         // generate of list of reserved tables of restaurant's tables initially not reserved
         ArrayList<ReservedTable> reservedTables = generateReservedTables(restaurant.getTables());
         if (reservedTables != null) {

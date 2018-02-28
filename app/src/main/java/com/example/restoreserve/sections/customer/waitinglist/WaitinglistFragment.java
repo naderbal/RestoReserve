@@ -14,8 +14,9 @@ import android.view.ViewGroup;
 import com.example.restoreserve.R;
 import com.example.restoreserve.base.BaseFragment;
 import com.example.restoreserve.data.reservations.ReservationsManager;
-import com.example.restoreserve.data.reservations.ReservationsProvider;
-import com.example.restoreserve.data.reservations.model.Reservation;
+import com.example.restoreserve.data.waitinglist.Waitinglist;
+import com.example.restoreserve.data.waitinglist.WaitinglistManager;
+import com.example.restoreserve.data.waitinglist.WaitinglistProvider;
 
 import java.util.ArrayList;
 
@@ -39,7 +40,7 @@ public class WaitinglistFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_reservations, container, false);
+        return inflater.inflate(R.layout.fragment_waitinglist, container, false);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class WaitinglistFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         rvContent = view.findViewById(R.id.rvContent);
         configureListing();
-        getReservations();
+        getWaitinglist();
         subscribeToReservations();
     }
 
@@ -65,16 +66,16 @@ public class WaitinglistFragment extends BaseFragment {
 
             @Override
             public void onNext(Integer integer) {
-                getReservations();
+                getWaitinglist();
             }
         });
     }
 
     private void configureListing() {
-        adapter = new WaitinglistAdapter(getContext(), new WaitinglistAdapter.OnReservationsListener() {
+        adapter = new WaitinglistAdapter(getContext(), new WaitinglistAdapter.OnWaitingListener() {
             @Override
-            public void onReservationClicked(Reservation reservation) {
-                showReservationAlert(reservation);
+            public void onReservationClicked(Waitinglist waitinglist) {
+                showAlert(waitinglist);
             }
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -82,66 +83,39 @@ public class WaitinglistFragment extends BaseFragment {
         rvContent.setAdapter(adapter);
     }
 
-    protected void showReservationAlert(Reservation reservation) {
+    protected void showAlert(Waitinglist waitinglist) {
         // create dialog
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
         // configure
-        alertBuilder.setTitle("Confirm Reservation");
-        alertBuilder.setMessage("Do you want to confirm this reservation?");
+        alertBuilder.setTitle("Remove from waiting list");
         alertBuilder.setCancelable(true);
         alertBuilder.setPositiveButton(
                 "Confirm",
                 (dialog, id) -> {
-                    confirmReservation(reservation);
+                    cancelWaitinglist(waitinglist);
                 });
-        alertBuilder.setNegativeButton("Cancel Reservation", ((dialog, id) -> {
-            cancelReservation(reservation);
+        alertBuilder.setNegativeButton("Cancel", ((dialog, id) -> {
+            cancelWaitinglist(waitinglist);
         }));
         // show dialog
         alertBuilder.show();
     }
 
-    private void cancelReservation(Reservation reservation) {
-        showProgressDialog("Canceling reservation");
-        ReservationsProvider.rxCancelReservation(reservation.getId())
+    private void cancelWaitinglist(Waitinglist waitinglist) {
+        showProgressDialog("Canceling");
+        WaitinglistProvider.rxCancelWaitinglist(waitinglist.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleSubscriber<Boolean>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
                         dismissProgressDialog();
-                        reservation.setConfirmed(false);
-                        adapter.removeReservation(reservation);
-                        showToast("Reservation Canceled");
+                        adapter.removeReservation(waitinglist);
+                        showToast("Canceled");
                         // update cache
-                        final SortedList<Reservation> reservations = adapter.getReservations();
-                        ArrayList<Reservation> reservationArray = convertReservationsToArray(reservations);
-                        ReservationsManager.getInstance().replaceReservations(reservationArray);
-                    }
-
-                    @Override
-                    public void onError(Throwable error) {
-                        dismissProgressDialog();
-                    }
-                });
-    }
-
-    private void confirmReservation(Reservation reservation) {
-        ReservationsProvider.rxConfirmReservation(reservation.getId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleSubscriber<Boolean>() {
-                    @Override
-                    public void onSuccess(Boolean aBoolean) {
-                        dismissProgressDialog();
-                        adapter.removeReservation(reservation);
-                        showToast("Reservation Confirmed");
-                        reservation.setConfirmed(true);
-                        adapter.notifyDataSetChanged();
-                        // update cache
-                        final SortedList<Reservation> reservations = adapter.getReservations();
-                        ArrayList<Reservation> reservationArray = convertReservationsToArray(reservations);
-                        ReservationsManager.getInstance().replaceReservations(reservationArray);
+                        final SortedList<Waitinglist> reservations = adapter.getWaitlists();
+                        ArrayList<Waitinglist> reservationArray = convertReservationsToArray(reservations);
+                        WaitinglistManager.getInstance().replaceWaitinglist(reservationArray);
                     }
 
                     @Override
@@ -152,16 +126,16 @@ public class WaitinglistFragment extends BaseFragment {
     }
 
     @NonNull
-    private ArrayList<Reservation> convertReservationsToArray(SortedList<Reservation> reservations) {
-        ArrayList<Reservation> reservationArray = new ArrayList<>();
-        for (int i=0; i< reservations.size();i++) {
-            reservationArray.add(reservations.get(i));
+    private ArrayList<Waitinglist> convertReservationsToArray(SortedList<Waitinglist> waitinglistSortedList) {
+        ArrayList<Waitinglist> waitinglistArray = new ArrayList<>();
+        for (int i=0; i< waitinglistSortedList.size();i++) {
+            waitinglistArray.add(waitinglistSortedList.get(i));
         }
-        return reservationArray;
+        return waitinglistArray;
     }
 
-    public void getReservations() {
-        ArrayList<Reservation> reservations = ReservationsManager.getInstance().getReservations();
-        adapter.replaceReservations(reservations);
+    public void getWaitinglist() {
+        ArrayList<Waitinglist> waitinglist = WaitinglistManager.getInstance().getWaitinglist();
+        adapter.replaceWaitinglist(waitinglist);
     }
 }

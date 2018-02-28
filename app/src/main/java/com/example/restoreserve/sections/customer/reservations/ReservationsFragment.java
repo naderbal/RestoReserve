@@ -134,7 +134,6 @@ public class ReservationsFragment extends BaseFragment {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
                         dismissProgressDialog();
-                        adapter.removeReservation(reservation);
                         showToast("Reservation Confirmed");
                         reservation.setConfirmed(true);
                         adapter.notifyDataSetChanged();
