@@ -21,6 +21,8 @@ import com.example.restoreserve.data.reservations.model.Reservation;
 import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.data.user.User;
 import com.example.restoreserve.data.waitinglist.WaitinglistManager;
+import com.example.restoreserve.data.waitinglist.WaitinglistProvider;
+import com.example.restoreserve.data.waitinglist.Waitinglist;
 import com.example.restoreserve.sections.customer.home.settings.SettingsFragment;
 import com.example.restoreserve.sections.customer.reservations.ReservationsFragment;
 import com.example.restoreserve.sections.customer.waitinglist.WaitinglistFragment;
@@ -81,6 +83,22 @@ public class HomeActivity extends AppCompatActivity {
                 bottomNavigation.setNotification(String.valueOf(integer), 2);
             }
         });
+        // remote
+        User user = AppSessionManager.getInstance().getUser();
+        WaitinglistProvider.rxGetWaitinglistOfUser(user.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleSubscriber<ArrayList<Waitinglist>>() {
+                    @Override
+                    public void onSuccess(ArrayList<Waitinglist> waitinglists) {
+                        WaitinglistManager.getInstance().replaceWaitinglist(waitinglists);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+
+                    }
+                });
     }
 
     private void subscribeToSession() {

@@ -355,7 +355,6 @@ public class AppAuthenticationManager {
         });
     }
 
-
     public static Single<User> rxUpdateUser(String id, User updatedUser) {
         return Single.create(singleSubscriber -> {
             // Initialize Firestore
@@ -374,6 +373,26 @@ public class AppAuthenticationManager {
                         }
                     });
         }).flatMap(v -> rxGetUser(id));
+    }
+
+    public static Single<Restaurant> rxUpdateRestaurant(String id, Restaurant updatedRestaurant) {
+        return Single.create(singleSubscriber -> {
+            // Initialize Firestore
+            FirestoreManager.getInstance().getFirestoreInstance()
+                    .collection("restaurants")
+                    .document(id)
+                    .set(updatedRestaurant.toMap(id), SetOptions.merge())
+                    .addOnCompleteListener(task -> {
+                        // check if profile set
+                        if (task.isSuccessful()) {
+                            singleSubscriber.onSuccess(null);
+                        } else {
+                            // broadcast error
+                            Exception exception = task.getException();
+                            singleSubscriber.onError(exception);
+                        }
+                    });
+        }).flatMap(v -> rxGetRestaurant(id));
     }
 
     public static class AccountNotFoundException extends Exception {

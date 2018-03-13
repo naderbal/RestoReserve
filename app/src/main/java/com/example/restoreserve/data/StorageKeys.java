@@ -30,4 +30,6 @@ public class StorageKeys {
     public static final String ADDRESS = "address";
     public static final String BRANCH = "branch";
     public static final String WAITINLIST = "waitinglists";
+    public static final String USERS = "users";
+    public static final String BANNED_USERS = "banned_users";
 }

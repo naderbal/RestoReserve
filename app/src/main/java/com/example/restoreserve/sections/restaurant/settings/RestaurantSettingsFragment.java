@@ -13,6 +13,7 @@ import com.example.restoreserve.base.BaseActivity;
 import com.example.restoreserve.base.BaseFragment;
 import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.sections.authentication.welcome.WelcomeActivity;
+import com.example.restoreserve.sections.restaurant.settings.banned.BannedCustomersActivity;
 
 public class RestaurantSettingsFragment extends BaseFragment {
     final String strLogout = "Log Out";
@@ -20,6 +21,7 @@ public class RestaurantSettingsFragment extends BaseFragment {
     TextView tvProfile;
     TextView tvAboutUs;
     TextView tvLogout;
+    TextView tvBannedlist;
 
 
     public RestaurantSettingsFragment() {
@@ -38,7 +40,7 @@ public class RestaurantSettingsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        return inflater.inflate(R.layout.fragment_restaurant_settings, container, false);
     }
 
     @Override
@@ -63,6 +65,14 @@ public class RestaurantSettingsFragment extends BaseFragment {
         tvAboutUs.setOnClickListener(v -> {
             openAboutUs();
         });
+        tvBannedlist.setOnClickListener(v -> {
+            openBannedList();
+        });
+    }
+
+    private void openBannedList() {
+        Intent intent = new Intent(getActivity(), BannedCustomersActivity.class);
+        startActivity(intent);
     }
 
     private void openAboutUs() {
@@ -103,5 +113,6 @@ public class RestaurantSettingsFragment extends BaseFragment {
         tvProfile = view.findViewById(R.id.tvProfile);
         tvAboutUs = view.findViewById(R.id.tvAboutUs);
         tvLogout = view.findViewById(R.id.tvLogout);
+        tvBannedlist = view.findViewById(R.id.tvBannedlist);
     }
 }

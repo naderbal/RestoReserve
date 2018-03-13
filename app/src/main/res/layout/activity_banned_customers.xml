@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_search_black_24dp"
+        android:layout_marginStart="@dimen/content_margin_normal"
+        android:layout_marginEnd="@dimen/content_margin_normal"
+        android:inputType="text"
+        android:maxLines="1"
+        android:lines="1"
+        android:hint="Search name, phone number"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvSearch"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/content_margin_large"
+        android:layout_height="240dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_margin_large"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:text="Banned Customers"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvBanned"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/content_margin_large"/>
+</LinearLayout>

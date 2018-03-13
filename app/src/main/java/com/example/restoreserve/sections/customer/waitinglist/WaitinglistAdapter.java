@@ -109,14 +109,19 @@ public class WaitinglistAdapter extends RecyclerView.Adapter<WaitinglistAdapter.
             tvTime = itemView.findViewById(R.id.tvTime);
         }
 
-        public void bind(Waitinglist res) {
-            tvRestaurant.setText(res.getRestoName());
-            tvDate.setText(res.getDate());
-            tvTime.setText(res.getTime());
+        public void bind(Waitinglist waitinglist) {
+            tvRestaurant.setText(waitinglist.getRestoName());
+            tvDate.setText(waitinglist.getDate());
+            tvTime.setText(waitinglist.getTime());
+            vContainer.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onWaitinglistClicked(waitinglist);
+                }
+            });
         }
     }
 
     public interface OnWaitingListener {
-        void onReservationClicked(Waitinglist waitinglist);
+        void onWaitinglistClicked(Waitinglist waitinglist);
     }
 }

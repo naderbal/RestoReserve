@@ -1,7 +1,6 @@
 package com.example.restoreserve.data.waitinglist;
 
 import android.content.Context;
-import android.os.Handler;
 
 import com.example.restoreserve.RestoReserve;
 import com.example.restoreserve.data.caching.SharedPreferencesCache;
@@ -45,7 +44,6 @@ public class WaitinglistManager {
     public int getSize() {
         return items.size();
     }
-
 
     public void addWaitinglist(Waitinglist waitinglist) {
         Cache cache  = getCache();

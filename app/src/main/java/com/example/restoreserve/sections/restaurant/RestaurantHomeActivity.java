@@ -21,6 +21,7 @@ import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.data.user.User;
 import com.example.restoreserve.sections.restaurant.reservations.RestaurantReservationsFragment;
 import com.example.restoreserve.sections.restaurant.settings.RestaurantSettingsFragment;
+import com.example.restoreserve.sections.restaurant.statistics.RestaurantStatisticsFragment;
 import com.example.restoreserve.utils.DateHelper;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class RestaurantHomeActivity extends BaseActivity {
     private ViewPager viewPager;
     // fragments
     private RestaurantReservationsFragment reservationsFragment;
+    private RestaurantStatisticsFragment statisticsFragment;
     private RestaurantSettingsFragment settingsFragment;
 
     @Override
@@ -146,6 +148,7 @@ public class RestaurantHomeActivity extends BaseActivity {
 
     private void initFragments() {
         reservationsFragment = RestaurantReservationsFragment.newInstance();
+        statisticsFragment = RestaurantStatisticsFragment.newInstance();
         settingsFragment = RestaurantSettingsFragment.newInstance();
     }
 
@@ -154,12 +157,14 @@ public class RestaurantHomeActivity extends BaseActivity {
         viewPager =  findViewById(R.id.viewPager);
 
         AHBottomNavigationItem item1 = new AHBottomNavigationItem("Reservations", R.drawable.ic_local_library_white_24dp);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Settings", R.drawable.ic_settings_white_24dp);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Statistics", R.drawable.ic_insert_chart_white_24dp);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Settings", R.drawable.ic_settings_white_24dp);
 
         ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
 
         bottomNavigationItems.add(item1);
         bottomNavigationItems.add(item2);
+        bottomNavigationItems.add(item3);
 
         bottomNavigation.setAccentColor(ContextCompat.getColor(getBaseContext(), R.color.colorAccent));
         bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
@@ -191,6 +196,8 @@ public class RestaurantHomeActivity extends BaseActivity {
     private BaseFragment getFragmentAtPosition(int position) {
         if (position == 0) {
             return reservationsFragment;
+        } else if (position == 1){
+            return statisticsFragment;
         } else {
             return settingsFragment;
         }
@@ -212,7 +219,7 @@ public class RestaurantHomeActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 }

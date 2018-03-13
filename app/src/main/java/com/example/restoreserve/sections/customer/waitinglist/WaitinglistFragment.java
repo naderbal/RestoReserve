@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.example.restoreserve.R;
 import com.example.restoreserve.base.BaseFragment;
-import com.example.restoreserve.data.reservations.ReservationsManager;
 import com.example.restoreserve.data.waitinglist.Waitinglist;
 import com.example.restoreserve.data.waitinglist.WaitinglistManager;
 import com.example.restoreserve.data.waitinglist.WaitinglistProvider;
@@ -53,7 +52,7 @@ public class WaitinglistFragment extends BaseFragment {
     }
 
     private void subscribeToReservations() {
-        ReservationsManager.getInstance().subscribeToTracker(new Subscriber<Integer>() {
+        WaitinglistManager.getInstance().subscribeToTracker(new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
 
@@ -74,7 +73,7 @@ public class WaitinglistFragment extends BaseFragment {
     private void configureListing() {
         adapter = new WaitinglistAdapter(getContext(), new WaitinglistAdapter.OnWaitingListener() {
             @Override
-            public void onReservationClicked(Waitinglist waitinglist) {
+            public void onWaitinglistClicked(Waitinglist waitinglist) {
                 showAlert(waitinglist);
             }
         });
@@ -92,16 +91,16 @@ public class WaitinglistFragment extends BaseFragment {
         alertBuilder.setPositiveButton(
                 "Confirm",
                 (dialog, id) -> {
-                    cancelWaitinglist(waitinglist);
+                    cancelWatchlist(waitinglist);
                 });
         alertBuilder.setNegativeButton("Cancel", ((dialog, id) -> {
-            cancelWaitinglist(waitinglist);
+            // cancel
         }));
         // show dialog
         alertBuilder.show();
     }
 
-    private void cancelWaitinglist(Waitinglist waitinglist) {
+    private void cancelWatchlist(Waitinglist waitinglist) {
         showProgressDialog("Canceling");
         WaitinglistProvider.rxCancelWaitinglist(waitinglist.getId())
                 .subscribeOn(Schedulers.io())
@@ -114,7 +113,7 @@ public class WaitinglistFragment extends BaseFragment {
                         showToast("Canceled");
                         // update cache
                         final SortedList<Waitinglist> reservations = adapter.getWaitlists();
-                        ArrayList<Waitinglist> reservationArray = convertReservationsToArray(reservations);
+                        ArrayList<Waitinglist> reservationArray = convertWaitinglistToArray(reservations);
                         WaitinglistManager.getInstance().replaceWaitinglist(reservationArray);
                     }
 
@@ -126,9 +125,9 @@ public class WaitinglistFragment extends BaseFragment {
     }
 
     @NonNull
-    private ArrayList<Waitinglist> convertReservationsToArray(SortedList<Waitinglist> waitinglistSortedList) {
+    private ArrayList<Waitinglist> convertWaitinglistToArray(SortedList<Waitinglist> waitinglistSortedList) {
         ArrayList<Waitinglist> waitinglistArray = new ArrayList<>();
-        for (int i=0; i< waitinglistSortedList.size();i++) {
+        for (int i = 0; i< waitinglistSortedList.size(); i++) {
             waitinglistArray.add(waitinglistSortedList.get(i));
         }
         return waitinglistArray;

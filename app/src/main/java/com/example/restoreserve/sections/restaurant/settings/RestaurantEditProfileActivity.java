@@ -6,9 +6,11 @@ import android.widget.Toast;
 import com.example.restoreserve.R;
 import com.example.restoreserve.base.BaseActivity;
 import com.example.restoreserve.data.authentication.AppAuthenticationManager;
+import com.example.restoreserve.data.restaurant.model.Restaurant;
 import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.data.user.User;
 import com.example.restoreserve.sections.authentication.sign_up.customer.CustomerProfileFragment;
+import com.example.restoreserve.sections.authentication.sign_up.restaurant.RestaurantProfileFragment;
 
 import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -21,28 +23,28 @@ public class RestaurantEditProfileActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         // fragment
-        CustomerProfileFragment fragment = CustomerProfileFragment.newInstance(false);
+        RestaurantProfileFragment fragment = RestaurantProfileFragment.newInstance(false);
         replaceFragment(R.id.vContainer, fragment, "fragment");
-        fragment.setListener(new CustomerProfileFragment.ProfileFragmentInteractionListener() {
+        fragment.setListener(new RestaurantProfileFragment.ProfileFragmentInteractionListener() {
             @Override
-            public void onSubmitProfile(User user) {
-                submitEditProfile(user);
+            public void onSubmitProfile(Restaurant restaurant, String password) {
+
             }
         });
     }
 
-    private void submitEditProfile(User user) {
+    private void submitEditProfile(Restaurant updatedRestaurant) {
         showProgressDialog(R.string.loading);
-        final User user1 = AppSessionManager.getInstance().getUser();
-        if (user1 == null) {
+        final Restaurant restaurant = AppSessionManager.getInstance().getRestaurant();
+        if (restaurant == null) {
             return;
         }
-        AppAuthenticationManager.rxUpdateUser(user1.getId(), user)
+        AppAuthenticationManager.rxUpdateRestaurant(restaurant.getId(), updatedRestaurant)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleSubscriber<User>() {
+                .subscribe(new SingleSubscriber<Restaurant>() {
                     @Override
-                    public void onSuccess(User value) {
+                    public void onSuccess(Restaurant value) {
                         dismissProgressDialog();
                         Toast.makeText(getBaseContext(), "Update Successful", Toast.LENGTH_SHORT).show();
                         setResult(BaseActivity.RESULT_CODE_UPDATE_SUCCESSFUL);

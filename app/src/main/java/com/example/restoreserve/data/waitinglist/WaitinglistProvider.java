@@ -23,6 +23,7 @@ public class WaitinglistProvider {
         map.put(StorageKeys.RESTO_ID, watinglist.getRestoId());
         map.put(StorageKeys.CUSTOMER_ID, watinglist.getCustomerId());
         map.put(StorageKeys.RESTO_NAME, watinglist.getRestoName());
+        map.put(StorageKeys.DATE, watinglist.getDate());
         map.put(StorageKeys.TIME, watinglist.getTime());
 
         return Single.create(singleSubscriber -> {
@@ -36,6 +37,36 @@ public class WaitinglistProvider {
                             try {
                                 singleSubscriber.onSuccess(task.getResult().getId());
                             } catch (Exception e) {
+                                singleSubscriber.onError(new Exception());
+                            }
+                        } else {
+                            // broadcast error
+                            Exception exception = task.getException();
+                            singleSubscriber.onError(exception);
+                        }
+                    });
+        });
+    }
+
+    public static Single<ArrayList<Waitinglist>> rxGetWaitinglistOfUser(String userId) {
+        final FirebaseFirestore instance = FirestoreManager.getInstance().getFirestoreInstance();
+        return Single.create(singleSubscriber -> {
+            instance
+                    .collection(StorageKeys.WAITINLIST)
+                    .whereEqualTo(StorageKeys.CUSTOMER_ID, userId)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        // check if profile set
+                        if (task.isSuccessful()) {
+                            // check if user exists with checking if document exists
+                            QuerySnapshot result = task.getResult();
+                            if (result != null) {
+                                try {
+                                    singleSubscriber.onSuccess(generateItemsList(result));
+                                } catch (Exception e) {
+                                    singleSubscriber.onError(new Exception());
+                                }
+                            } else {
                                 singleSubscriber.onError(new Exception());
                             }
                         } else {

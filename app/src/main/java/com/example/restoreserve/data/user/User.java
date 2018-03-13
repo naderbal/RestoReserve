@@ -68,9 +68,9 @@ public class User {
     public HashMap<String, Object> toMap(@NonNull String id) {
         HashMap<String, Object> map = new HashMap<>();
         map.put(StorageKeys.ID, id);
-        map.put(StorageKeys.EMAIL, email);
-        map.put(StorageKeys.NAME, name);
-        map.put(StorageKeys.PHONE_NUMBER, phoneNumber);
+        if (email != null && !email.isEmpty()) map.put(StorageKeys.EMAIL, email);
+        if (name != null && !name.isEmpty()) map.put(StorageKeys.NAME, name);
+        if (phoneNumber != null && !phoneNumber.isEmpty()) map.put(StorageKeys.PHONE_NUMBER, phoneNumber);
         return map;
     }
 }

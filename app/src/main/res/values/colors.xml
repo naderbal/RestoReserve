@@ -7,4 +7,5 @@
     <color name="white">#ffffff</color>
     <color name="reservation_confirmed_bg">#beff92</color>
     <color name="reservation_default_bg">#ffffff</color>
+    <color name="customer_banned">#79ff6b42</color>
 </resources>

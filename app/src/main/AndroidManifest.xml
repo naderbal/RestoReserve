@@ -35,7 +35,11 @@
             android:screenOrientation="portrait" />
         <activity android:name=".sections.customer.home.settings.EditProfileActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".sections.restaurant.settings.RestaurantEditProfileActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".sections.customer.home.settings.AboutUsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".sections.restaurant.settings.banned.BannedCustomersActivity"
             android:screenOrientation="portrait"/>
     </application>
 

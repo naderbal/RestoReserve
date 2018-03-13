@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 
 import com.example.restoreserve.R;
 import com.example.restoreserve.base.BaseFragment;
+import com.example.restoreserve.data.restaurant.CustomerProvider;
 import com.example.restoreserve.data.restaurant.RestaurantProvider;
 import com.example.restoreserve.data.restaurant.model.Restaurant;
+import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.sections.customer.restaurant.RestaurantActivity;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class RestaurantsListingFragment extends BaseFragment {
     private RecyclerView rvContent;
     private RestaurantsAdapter adapter;
     SwipeRefreshLayout vSwipe;
+    ArrayList<String> bannedRestaurants;
 
     public static RestaurantsListingFragment newInstance() {
         return new RestaurantsListingFragment();

@@ -15,6 +15,7 @@ import com.example.restoreserve.data.reservations.ReservationsProvider;
 import com.example.restoreserve.data.reservations.model.Reservation;
 import com.example.restoreserve.data.reservations.model.ReservedTable;
 import com.example.restoreserve.data.reservations.model.Table;
+import com.example.restoreserve.data.restaurant.CustomerProvider;
 import com.example.restoreserve.data.restaurant.model.Restaurant;
 import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.data.user.User;
@@ -62,6 +63,32 @@ public class RestaurantActivity extends BaseActivity {
         restaurant = (Restaurant) getIntent().getSerializableExtra(EXTRA_RESTAURANT);
         initViews();
         configureListing();
+        checkIfBanned();
+    }
+
+    private void checkIfBanned() {
+        showProgressDialog("Loading");
+        final String id = AppSessionManager.getInstance().getUser().getId();
+        CustomerProvider.rxGetBannedOfCustomer(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleSubscriber<ArrayList<String>>() {
+                    @Override
+                    public void onSuccess(ArrayList<String> strings) {
+                        dismissProgressDialog();
+                        for (String string : strings) {
+                            if (restaurant.getId().equals(string)) {
+                                showToast("You are banned from this restaurant");
+                                finish();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+
+                    }
+                });
     }
 
     private void initViews() {
@@ -103,7 +130,7 @@ public class RestaurantActivity extends BaseActivity {
                         showToast("Added to waiting list");
                         dismissProgressDialog();
                         Waitinglist waitinglist1 = new Waitinglist(s, waitinglist);
-                        WaitinglistManager.getInstance().addWaitinglist(waitinglist);
+                        WaitinglistManager.getInstance().addWaitinglist(waitinglist1);
                     }
                 });
     }
