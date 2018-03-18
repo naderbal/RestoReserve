@@ -1,7 +1,15 @@
 package com.example.restoreserve.sections.customer.restaurant;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.media.RingtoneManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,6 +18,7 @@ import android.widget.ProgressBar;
 
 import com.example.restoreserve.R;
 import com.example.restoreserve.base.BaseActivity;
+import com.example.restoreserve.data.MyNotificationPublisher;
 import com.example.restoreserve.data.reservations.ReservationsManager;
 import com.example.restoreserve.data.reservations.ReservationsProvider;
 import com.example.restoreserve.data.reservations.model.Reservation;
@@ -23,6 +32,7 @@ import com.example.restoreserve.data.waitinglist.Waitinglist;
 import com.example.restoreserve.data.waitinglist.WaitinglistManager;
 import com.example.restoreserve.data.waitinglist.WaitinglistProvider;
 import com.example.restoreserve.sections.customer.restaurant.tables_listing.TablesAdapter;
+import com.example.restoreserve.sections.splash.SplashActivity;
 import com.example.restoreserve.utils.ui.CustomInputSelectorView;
 import com.example.restoreserve.utils.DateHelper;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -174,6 +184,7 @@ public class RestaurantActivity extends BaseActivity {
                         dismissProgressDialog();
                         Reservation reservation1 = new Reservation(id, reservation);
                         ReservationsManager.getInstance().addReservation(reservation1);
+                        createNotification(reservation1);
                         finish();
                     }
 
@@ -183,6 +194,50 @@ public class RestaurantActivity extends BaseActivity {
                         showToast("Something went wrong");
                     }
                 });
+    }
+
+    private void createNotification(Reservation reservation) {
+        final Calendar instance = Calendar.getInstance();
+        String strDate = reservation.getDate() + " " + reservation.getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.ENGLISH);
+        Date date;
+        try {
+            date = simpleDateFormat.parse(strDate);
+        } catch (ParseException e) {
+            return;
+        }
+        final Date time = instance.getTime();
+        long delay = date.getTime() - time.getTime() - (restaurant.getConfirmationDelayMins() * 1000);
+        final String notificationText = getNotificationText(reservation);
+        scheduleNotification(delay, notificationText, 1);
+    }
+
+    private String getNotificationText(Reservation reservation) {
+        return "You should confirm your reservation at " + reservation.getRestoName();
+    }
+
+    public void scheduleNotification(long delay, String text, int notificationId) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext(), "")
+                .setContentTitle(getBaseContext().getString(R.string.app_name))
+                .setContentText(text)
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.logo)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+        Intent intent = new Intent(getBaseContext(), SplashActivity.class);
+        PendingIntent activity = PendingIntent.getActivity(getBaseContext(), notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(activity);
+
+        Notification notification = builder.build();
+
+        Intent notificationIntent = new Intent(getBaseContext(), MyNotificationPublisher.class);
+        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION_ID, notificationId);
+        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), notificationId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getBaseContext().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
 
     private void openDate() {

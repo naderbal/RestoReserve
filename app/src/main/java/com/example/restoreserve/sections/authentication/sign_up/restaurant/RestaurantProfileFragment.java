@@ -41,6 +41,7 @@ public class RestaurantProfileFragment extends BaseFragment {
     private TextInputLayout tilBranch;
     private TextInputLayout tilAddress;
     private TextInputLayout tilWebsite;
+    private TextInputLayout tilConfirmationDelay;
     private TextInputLayout tilPassword;
     private TextInputLayout tilConfirmPassword;
     // et
@@ -51,6 +52,7 @@ public class RestaurantProfileFragment extends BaseFragment {
     private TextInputEditText etAddress;
     private TextInputEditText etWebsite;
     private TextInputEditText etPassword;
+    private TextInputEditText etConfirmationDelay;
     private TextInputEditText etConfirmPassword;
     // input selector
     CustomInputSelectorView vOpeningHour;
@@ -102,6 +104,7 @@ public class RestaurantProfileFragment extends BaseFragment {
         tilPhone = view.findViewById(R.id.tilPhone);
         tilBranch = view.findViewById(R.id.tilBranch);
         tilAddress = view.findViewById(R.id.tilAddress);
+        tilConfirmationDelay = view.findViewById(R.id.tilConfirmationDelay);
         tilWebsite = view.findViewById(R.id.tilWebsite);
         // et
         etName = view.findViewById(R.id.etName);
@@ -111,6 +114,7 @@ public class RestaurantProfileFragment extends BaseFragment {
         etAddress = view.findViewById(R.id.etAddress);
         etWebsite = view.findViewById(R.id.etWebsite);
         etPassword = view.findViewById(R.id.etPassword);
+        etConfirmationDelay = view.findViewById(R.id.etConfirmationDelay);
         etConfirmPassword = view.findViewById(R.id.etConfirmPassword);
         // input
         vOpeningHour = view.findViewById(R.id.vOpeningHour);
@@ -193,6 +197,7 @@ public class RestaurantProfileFragment extends BaseFragment {
         removeError(etBranch, tilPhone);
         removeError(etAddress, tilPhone);
         removeError(etPassword, tilPassword);
+        removeError(etConfirmationDelay, tilConfirmationDelay);
         removeError(etConfirmPassword, tilConfirmPassword);
     }
 
@@ -233,6 +238,9 @@ public class RestaurantProfileFragment extends BaseFragment {
         // website
         String website = restaurant.getWebsite();
         etWebsite.setText(website);
+        // delay
+        String delay = String.valueOf(restaurant.getConfirmationDelayMins());
+        etConfirmationDelay.setText(delay);
     }
 
     private void handleSubmitClicked() {
@@ -243,6 +251,7 @@ public class RestaurantProfileFragment extends BaseFragment {
         String branch = getInputText(etBranch);
         String address = getInputText(etAddress);
         String website = getInputText(etWebsite);
+        String delay = getInputText(etConfirmationDelay);
 
         String openingHour = vOpeningHour.getValue();
         String closingHour = vClosingHour.getValue();
@@ -257,6 +266,7 @@ public class RestaurantProfileFragment extends BaseFragment {
         restaurant.setWebsite(website);
         restaurant.setOpeningHour(openingHour);
         restaurant.setClosingHour(closingHour);
+        restaurant.setConfirmationDelayMins(Integer.parseInt(delay));
         restaurant.setTables(tables);
         // check if inputs are valid
         if (inputFieldsValid(restaurant, password)) {
@@ -312,6 +322,10 @@ public class RestaurantProfileFragment extends BaseFragment {
         }
         if (restaurant.getTables() == null) {
             showToast("Please set tables");
+            return false;
+        }
+        if (restaurant.getConfirmationDelayMins() == 0) {
+            showToast("Please set confirmation delay time");
             return false;
         }
 

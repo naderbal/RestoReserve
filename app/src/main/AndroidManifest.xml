@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo3"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -41,6 +41,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".sections.restaurant.settings.banned.BannedCustomersActivity"
             android:screenOrientation="portrait"/>
+
+        <receiver  android:process=":remote" android:name=".data.MyNotificationPublisher"/>
     </application>
 
 </manifest>

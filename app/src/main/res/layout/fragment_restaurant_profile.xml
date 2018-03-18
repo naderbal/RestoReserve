@@ -165,7 +165,22 @@
                     android:layout_height="wrap_content"
                     android:inputType="textWebEditText"
                     android:hint="Website"/>
+            </android.support.design.widget.TextInputLayout>
 
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilConfirmationDelay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                android:layout_marginTop="@dimen/content_margin_normal">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/etConfirmationDelay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:hint="Confirmation Delay In Minutes"/>
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
@@ -207,6 +222,7 @@
                 android:layout_marginBottom="@dimen/content_margin_normal"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:textColor="@color/white"
+                android:backgroundTint="@color/colorAccent"
                 android:text="Sign Up"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

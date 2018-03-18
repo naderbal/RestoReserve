@@ -8,7 +8,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -26,9 +25,21 @@ public class Restaurant implements Serializable {
     private String closingHour;
     private String tablesPicUrl;
     private int tablesCount;
+    private int confirmationDelayMins;
     private ArrayList<Table> tables;
 
-    public Restaurant(String name, String phoneNumber, String email, String website, String address, String branch, String openingHour, String closingHour, String tablesPicUrl, int tablesCount, ArrayList<Table> tables) {
+    public Restaurant(String name,
+                      String phoneNumber,
+                      String email,
+                      String website,
+                      String address,
+                      String branch,
+                      String openingHour,
+                      String closingHour,
+                      String tablesPicUrl,
+                      int tablesCount,
+                      int confirmationDelayMins,
+                      ArrayList<Table> tables) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
@@ -38,6 +49,7 @@ public class Restaurant implements Serializable {
         this.openingHour = openingHour;
         this.closingHour = closingHour;
         this.tablesPicUrl = tablesPicUrl;
+        this.confirmationDelayMins = confirmationDelayMins;
         this.tablesCount = tablesCount;
         this.tables = tables;
     }
@@ -73,6 +85,9 @@ public class Restaurant implements Serializable {
         }
         if (document.contains(StorageKeys.TABLES_COUNT)) {
             this.tablesCount = document.getDouble(StorageKeys.TABLES_COUNT).intValue();
+        }
+        if (document.contains(StorageKeys.CONFIRMATION_DELAY_MINS)) {
+            this.confirmationDelayMins = document.getDouble(StorageKeys.CONFIRMATION_DELAY_MINS).intValue();
         }
         if (document.contains(StorageKeys.TABLES)) {
             final ArrayList<HashMap<String, Object>> tab = (ArrayList<HashMap<String, Object>>) document.getData().get(StorageKeys.TABLES);
@@ -186,6 +201,14 @@ public class Restaurant implements Serializable {
         this.tablesCount = tablesCount;
     }
 
+    public void setConfirmationDelayMins(int confirmationDelayMins) {
+        this.confirmationDelayMins = confirmationDelayMins;
+    }
+
+    public int getConfirmationDelayMins() {
+        return confirmationDelayMins;
+    }
+
     public void setTables(ArrayList<Table> tables) {
         this.tables = tables;
     }
@@ -204,6 +227,7 @@ public class Restaurant implements Serializable {
         map.put(StorageKeys.TABLES_PIC_URL, tablesPicUrl);
         map.put(StorageKeys.TABLES_COUNT, tablesCount);
         map.put(StorageKeys.TABLES, getFormatedTables());
+        map.put(StorageKeys.CONFIRMATION_DELAY_MINS, confirmationDelayMins);
         return map;
     }
 

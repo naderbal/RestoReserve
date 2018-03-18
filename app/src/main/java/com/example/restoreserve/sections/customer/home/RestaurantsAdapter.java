@@ -65,7 +65,7 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.
 
     @Override
     public TableViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_restaurant, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_restaurant, parent, false);
         // create and return view holder
         return new TableViewHolder(view);
     }
@@ -89,14 +89,17 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.
     public class TableViewHolder extends RecyclerView.ViewHolder{
 
         TextView tvRestaurant;
+        TextView tvAddress;
 
         public TableViewHolder(View itemView) {
             super(itemView);
             tvRestaurant = itemView.findViewById(R.id.tvRestaurant);
+            tvAddress = itemView.findViewById(R.id.tvAddress);
         }
 
         public void bind(Restaurant restaurant) {
             tvRestaurant.setText(restaurant.getName());
+            tvAddress.setText(restaurant.getAddress());
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onRestaurantClicked(restaurant);
