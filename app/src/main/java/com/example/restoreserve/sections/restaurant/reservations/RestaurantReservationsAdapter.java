@@ -65,7 +65,7 @@ public class RestaurantReservationsAdapter extends RecyclerView.Adapter<Restaura
 
     @Override
     public TableViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_reservation, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_restaurant_reservation, parent, false);
         // create and return view holder
         return new TableViewHolder(view);
     }
@@ -98,19 +98,23 @@ public class RestaurantReservationsAdapter extends RecyclerView.Adapter<Restaura
 
     public class TableViewHolder extends RecyclerView.ViewHolder{
 
-        TextView tvRestaurant, tvDate, tvTime;
+        TextView tvName,tvTableName, tvPhoneNumber, tvDate, tvTime;
         View vContainer;
 
         public TableViewHolder(View itemView) {
             super(itemView);
             vContainer = itemView.findViewById(R.id.vContainer);
-            tvRestaurant = itemView.findViewById(R.id.tvRestaurant);
+            tvName = itemView.findViewById(R.id.tvName);
+            tvTableName = itemView.findViewById(R.id.tvTableName);
+            tvPhoneNumber = itemView.findViewById(R.id.tvPhoneNumber);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvTime = itemView.findViewById(R.id.tvTime);
         }
 
         public void bind(Reservation res) {
-            tvRestaurant.setText(res.getRestoName());
+            tvName.setText(res.getCustomerName());
+            tvPhoneNumber.setText(res.getCustomerPhonenumber());
+            tvTableName.setText(res.getTableId());
             tvDate.setText(res.getDate());
             tvTime.setText(res.getTime());
 
@@ -121,12 +125,12 @@ public class RestaurantReservationsAdapter extends RecyclerView.Adapter<Restaura
             } else {
                 // show default background and set click listener on container
                 vContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.reservation_default_bg));
-                vContainer.setOnClickListener(v -> {
-                    if (listener != null) {
-                        listener.onReservationClicked(res);
-                    }
-                });
             }
+            vContainer.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onReservationClicked(res);
+                }
+            });
         }
     }
 

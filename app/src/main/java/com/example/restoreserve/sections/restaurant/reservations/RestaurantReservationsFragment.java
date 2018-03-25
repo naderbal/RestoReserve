@@ -50,12 +50,24 @@ public class RestaurantReservationsFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         rvContent = view.findViewById(R.id.rvContent);
         vSwipe = view.findViewById(R.id.vSwipe);
+        vSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                vSwipe.setRefreshing(false);
+            }
+        });
         configureListing();
         getReservations();
     }
 
     private void configureListing() {
-        adapter = new RestaurantReservationsAdapter(getContext(), reservation -> showReservationAlert(reservation));
+        adapter = new RestaurantReservationsAdapter(getContext(), reservation -> {
+            if  (reservation.isConfirmed()) {
+                showReservationDeletionAlert(reservation);
+            } else {
+                showReservationAlert(reservation);
+            }
+        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvContent.setLayoutManager(linearLayoutManager);
         rvContent.setAdapter(adapter);
@@ -76,6 +88,22 @@ public class RestaurantReservationsFragment extends BaseFragment {
         alertBuilder.setNegativeButton("Cancel Reservation", ((dialog, id) -> {
             cancelReservation(reservation);
         }));
+        // show dialog
+        alertBuilder.show();
+    }
+
+    protected void showReservationDeletionAlert(Reservation reservation) {
+        // create dialog
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+        // configure
+        alertBuilder.setTitle("Cancel Reservation");
+        alertBuilder.setMessage("Do you want to cancel this reservation?");
+        alertBuilder.setCancelable(true);
+        alertBuilder.setPositiveButton(
+                "Cancel Reservation",
+                (dialog, id) -> {
+                    cancelReservation(reservation);
+                });
         // show dialog
         alertBuilder.show();
     }

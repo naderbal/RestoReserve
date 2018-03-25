@@ -121,6 +121,11 @@ public class BannedAdapter extends RecyclerView.Adapter<BannedAdapter.CustomerVi
         public void bind(User bannedCustomer) {
             tvName.setText(bannedCustomer.getName());
             tvPhoneNumber.setText(bannedCustomer.getPhoneNumber());
+            vContainer.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onCustomerClicked(bannedCustomer);
+                }
+            });
         }
     }
 

@@ -28,7 +28,7 @@ public class RestaurantEditProfileActivity extends BaseActivity{
         fragment.setListener(new RestaurantProfileFragment.ProfileFragmentInteractionListener() {
             @Override
             public void onSubmitProfile(Restaurant restaurant, String password) {
-
+                submitEditProfile(restaurant);
             }
         });
     }

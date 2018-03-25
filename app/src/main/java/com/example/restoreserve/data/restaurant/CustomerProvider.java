@@ -9,6 +9,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import rx.Single;
 
@@ -130,6 +131,43 @@ public class CustomerProvider  {
                             // check if user exists with checking if document exists
                             try {
                                 singleSubscriber.onSuccess(true);
+                            } catch (Exception e) {
+                                singleSubscriber.onError(new Exception());
+                            }
+                        } else {
+                            // broadcast error
+                            Exception exception = task.getException();
+                            singleSubscriber.onError(exception);
+                        }
+                    });
+        });
+    }
+
+    public static Single<Boolean> rxUnBanCustomer(User user) {
+        final FirebaseFirestore instance = FirestoreManager.getInstance().getFirestoreInstance();
+        return Single.create(singleSubscriber -> {
+            instance
+                    .collection(StorageKeys.BANNED_USERS)
+                    .whereEqualTo(StorageKeys.ID, user.getId())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        // check if profile set
+                        if (task.isSuccessful()) {
+                            final List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                            if (!(documents.size() > 0)) {
+                                singleSubscriber.onError(new Exception());
+                                return;
+                            }
+                            final DocumentSnapshot documentSnapshot = documents.get(0);
+                            // check if user exists with checking if document exists
+                            try {
+                                instance
+                                        .collection(StorageKeys.BANNED_USERS)
+                                        .document(documentSnapshot.getId())
+                                        .delete()
+                                        .addOnCompleteListener(task1 -> {
+                                            singleSubscriber.onSuccess(true);
+                                        });
                             } catch (Exception e) {
                                 singleSubscriber.onError(new Exception());
                             }

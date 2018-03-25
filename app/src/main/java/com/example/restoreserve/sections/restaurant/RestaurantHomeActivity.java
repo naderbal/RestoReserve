@@ -53,7 +53,6 @@ public class RestaurantHomeActivity extends BaseActivity {
         initViews();
         initFragments();
         setupPager();
-        subscribeToReservations();
         subscribeToSession();
     }
 
@@ -77,40 +76,6 @@ public class RestaurantHomeActivity extends BaseActivity {
                 }
             }
         });
-    }
-
-    private void subscribeToReservations() {
-        // cache
-        ReservationsManager.getInstance().subscribeToTracker(new Subscriber<Integer>() {
-            @Override
-            public void onCompleted() {}
-
-            @Override
-            public void onError(Throwable e) {}
-
-            @Override
-            public void onNext(Integer integer) {
-                bottomNavigation.setNotification(String.valueOf(integer), 1);
-            }
-        });
-        // remote
-        User user = AppSessionManager.getInstance().getUser();
-        if (user != null) {
-            ReservationsProvider.rxGetReservationOfUser(user.getId())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new SingleSubscriber<ArrayList<Reservation>>() {
-                        @Override
-                        public void onSuccess(ArrayList<Reservation> reservations) {
-                            ReservationsManager.getInstance().addReservations(handleReservations(reservations));
-                        }
-
-                        @Override
-                        public void onError(Throwable error) {
-
-                        }
-                    });
-        }
     }
 
     /**

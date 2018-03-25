@@ -33,4 +33,6 @@ public class StorageKeys {
     public static final String USERS = "users";
     public static final String BANNED_USERS = "banned_users";
     public static final String CONFIRMATION_DELAY_MINS = "confirmation_delayed_minutes";
+    public static final String CUSTOMER_NAME = "customer_name";
+    public static final String CUSTOMER_PHONE_NUMBER = "customer_phone_number";
 }

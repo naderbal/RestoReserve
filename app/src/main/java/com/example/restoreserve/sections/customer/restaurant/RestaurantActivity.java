@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.restoreserve.R;
 import com.example.restoreserve.base.BaseActivity;
@@ -57,6 +58,7 @@ import rx.schedulers.Schedulers;
  */
 public class RestaurantActivity extends BaseActivity {
     public static final String EXTRA_RESTAURANT = "restaurant";
+    TextView tvName, tvBranch, tvPhoneNumber, tvAddress, tvWebsite;
     CustomInputSelectorView vDate, vTime;
     Button btnSubmit;
     Button btnWaitinglist;
@@ -72,8 +74,57 @@ public class RestaurantActivity extends BaseActivity {
         // todo checks
         restaurant = (Restaurant) getIntent().getSerializableExtra(EXTRA_RESTAURANT);
         initViews();
+        setupInfo();
         configureListing();
         checkIfBanned();
+    }
+
+    private void initViews() {
+        tvName = findViewById(R.id.tvName);
+        tvBranch = findViewById(R.id.tvBranch);
+        tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
+        tvAddress = findViewById(R.id.tvAddress);
+        tvWebsite = findViewById(R.id.tvWebsite);
+        tvName = findViewById(R.id.tvName);
+        vDate = findViewById(R.id.vDate);
+        vTime = findViewById(R.id.vTime);
+        btnSubmit = findViewById(R.id.btnSubmit);
+        btnWaitinglist = findViewById(R.id.btnWaitinglist);
+        pbTablesLoading = findViewById(R.id.pbTablesLoading);
+        // click listeners
+        vDate.setOnClickListener(v -> openDate());
+        vTime.setOnClickListener(v -> openTime());
+        rvTables = findViewById(R.id.rvTables);
+        btnWaitinglist.setOnClickListener(v -> handleWaitinglistClicked());
+    }
+
+    private void setupInfo() {
+        tvName.setText(restaurant.getName());
+        final String branch = restaurant.getBranch();
+        if (branch != null) {
+            tvBranch.setText(branch);
+        } else {
+            tvBranch.setVisibility(View.GONE);
+        }
+
+        final String phoneNumber = restaurant.getPhoneNumber();
+        if (phoneNumber != null) {
+            tvPhoneNumber.setText(phoneNumber);
+        } else {
+            tvPhoneNumber.setVisibility(View.GONE);
+        }
+        final String address = restaurant.getAddress();
+        if (address != null) {
+            tvAddress.setText(address);
+        } else {
+            tvAddress.setVisibility(View.GONE);
+        }
+        final String website = restaurant.getWebsite();
+        if (website != null) {
+            tvWebsite.setText(website);
+        } else {
+            tvWebsite.setVisibility(View.GONE);
+        }
     }
 
     private void checkIfBanned() {
@@ -99,19 +150,6 @@ public class RestaurantActivity extends BaseActivity {
 
                     }
                 });
-    }
-
-    private void initViews() {
-        vDate = findViewById(R.id.vDate);
-        vTime = findViewById(R.id.vTime);
-        btnSubmit = findViewById(R.id.btnSubmit);
-        btnWaitinglist = findViewById(R.id.btnWaitinglist);
-        pbTablesLoading = findViewById(R.id.pbTablesLoading);
-        // click listeners
-        vDate.setOnClickListener(v -> openDate());
-        vTime.setOnClickListener(v -> openTime());
-        rvTables = findViewById(R.id.rvTables);
-        btnWaitinglist.setOnClickListener(v -> handleWaitinglistClicked());
     }
 
     private void handleWaitinglistClicked() {
@@ -166,6 +204,8 @@ public class RestaurantActivity extends BaseActivity {
     private void reserveTable(Table table) {
         User user = AppSessionManager.getInstance().getUser();
         final String userId = user.getId();
+        final String userName = user.getName();
+        final String userPhonenumber = user.getPhoneNumber();
         final String restId = restaurant.getId();
         final String restName = restaurant.getName();
         final String date = vDate.getValue();
@@ -173,7 +213,7 @@ public class RestaurantActivity extends BaseActivity {
         final String tableId = table.getId();
         // show loading
         showProgressDialog("Reserving table");
-        Reservation reservation = new Reservation(restId, restName, userId, date, time, tableId, false);
+        Reservation reservation = new Reservation(restId, restName, userId, userName, userPhonenumber, date, time, tableId, false);
         ReservationsProvider.rxReserveTable(reservation)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

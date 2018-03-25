@@ -86,6 +86,12 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.
         notifyDataSetChanged();
     }
 
+    public void replaceRestaurants(ArrayList<Restaurant> restaurants) {
+        this.restaurants.clear();
+        this.restaurants.addAll(restaurants);
+        notifyDataSetChanged();
+    }
+
     public class TableViewHolder extends RecyclerView.ViewHolder{
 
         TextView tvRestaurant;

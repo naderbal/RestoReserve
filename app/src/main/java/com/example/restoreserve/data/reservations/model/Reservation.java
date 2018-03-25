@@ -14,15 +14,24 @@ public class Reservation {
     private String restoId;
     private String restoName;
     private String customerId;
+    private String customerName;
+    private String customerPhonenumber;
     private String date;
     private String time;
     private String tableId;
     private boolean isConfirmed;
 
-    public Reservation(String restoId, String restoName, String customerId, String date, String time, String tableId, boolean isConfirmed) {
+    public Reservation(String restoId,
+                       String restoName,
+                       String customerId,
+                       String customerName,
+                       String customerPhonenumber,
+                       String date, String time, String tableId, boolean isConfirmed) {
         this.restoId = restoId;
         this.restoName = restoName;
         this.customerId = customerId;
+        this.customerName = customerName;
+        this.customerPhonenumber = customerPhonenumber;
         this.date = date;
         this.time = time;
         this.tableId = tableId;
@@ -34,6 +43,8 @@ public class Reservation {
         this.restoId = reservation.restoId;
         this.restoName = reservation.restoName;
         this.customerId = reservation.customerId;
+        this.customerName = reservation.customerName;
+        this.customerPhonenumber = reservation.customerPhonenumber;
         this.date = reservation.date;
         this.time = reservation.time;
         this.tableId = reservation.tableId;
@@ -49,6 +60,12 @@ public class Reservation {
         }
         if (snapshot.contains(StorageKeys.CUSTOMER_ID)) {
             customerId = snapshot.getString(StorageKeys.CUSTOMER_ID);
+        }
+        if (snapshot.contains(StorageKeys.CUSTOMER_NAME)) {
+            customerName = snapshot.getString(StorageKeys.CUSTOMER_NAME);
+        }
+        if (snapshot.contains(StorageKeys.CUSTOMER_PHONE_NUMBER)) {
+            customerPhonenumber = snapshot.getString(StorageKeys.CUSTOMER_PHONE_NUMBER);
         }
         if (snapshot.contains(StorageKeys.DATE)) {
             date = snapshot.getString(StorageKeys.DATE);
@@ -77,6 +94,12 @@ public class Reservation {
             }
             if (!jsonObject.isNull(StorageKeys.CUSTOMER_ID)) {
                 this.customerId = jsonObject.getString(StorageKeys.CUSTOMER_ID);
+            }
+            if (!jsonObject.isNull(StorageKeys.CUSTOMER_NAME)) {
+                this.customerName = jsonObject.getString(StorageKeys.CUSTOMER_NAME);
+            }
+            if (!jsonObject.isNull(StorageKeys.CUSTOMER_PHONE_NUMBER)) {
+                this.customerPhonenumber = jsonObject.getString(StorageKeys.CUSTOMER_PHONE_NUMBER);
             }
             if (!jsonObject.isNull(StorageKeys.DATE)) {
                 this.date = jsonObject.getString(StorageKeys.DATE);
@@ -123,6 +146,14 @@ public class Reservation {
         return tableId;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public String getCustomerPhonenumber() {
+        return customerPhonenumber;
+    }
+
     public boolean isConfirmed() {
         return isConfirmed;
     }
@@ -138,6 +169,8 @@ public class Reservation {
             jsonObject.put(StorageKeys.RESTO_ID, restoId);
             jsonObject.put(StorageKeys.RESTO_NAME, restoName);
             jsonObject.put(StorageKeys.CUSTOMER_ID, customerId);
+            jsonObject.put(StorageKeys.CUSTOMER_NAME, customerName);
+            jsonObject.put(StorageKeys.CUSTOMER_PHONE_NUMBER, customerPhonenumber);
             jsonObject.put(StorageKeys.DATE, date);
             jsonObject.put(StorageKeys.TIME, time);
             jsonObject.put(StorageKeys.TABLE_ID, tableId);

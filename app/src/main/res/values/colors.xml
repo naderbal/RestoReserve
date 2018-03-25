@@ -5,6 +5,7 @@
     <color name="colorAccent">#64dd17</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
+    <color name="grey">#a6a6a6</color>
     <color name="reservation_confirmed_bg">#beff92</color>
     <color name="reservation_default_bg">#ffffff</color>
     <color name="customer_banned">#79ff6b42</color>

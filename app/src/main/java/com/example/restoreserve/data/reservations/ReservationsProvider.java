@@ -29,6 +29,8 @@ public class ReservationsProvider {
         map.put(StorageKeys.TIME, reservation.getTime());
         map.put(StorageKeys.IS_CONFIRMED, reservation.isConfirmed());
         map.put(StorageKeys.CUSTOMER_ID, reservation.getCustomerId());
+        map.put(StorageKeys.CUSTOMER_NAME, reservation.getCustomerName());
+        map.put(StorageKeys.CUSTOMER_PHONE_NUMBER, reservation.getCustomerPhonenumber());
 
         return Single.create(singleSubscriber -> {
             instance

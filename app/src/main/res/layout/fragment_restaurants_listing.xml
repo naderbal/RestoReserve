@@ -7,6 +7,18 @@
     android:orientation="vertical"
     tools:context=".sections.customer.home.HomeActivity">
 
+    <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_search_black_24dp"
+            android:layout_marginStart="@dimen/content_margin_normal"
+            android:layout_marginEnd="@dimen/content_margin_normal"
+            android:inputType="text"
+            android:maxLines="1"
+            android:lines="1"
+            android:hint="Search restaurant"/>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/vSwipe"
         android:layout_width="match_parent"

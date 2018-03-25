@@ -89,6 +89,10 @@ public class RestaurantStatisticsFragment extends BaseFragment {
     }
 
     private void openEndDate() {
+        if (vStartDate.getValue().equals(CustomInputSelectorView.DEFAULT_VALUE)) {
+            showToast("Please set start date");
+            return;
+        }
         Calendar cal = Calendar.getInstance();
         // initialize date picker
         DatePickerDialog dpd = DatePickerDialog.newInstance(
@@ -109,6 +113,10 @@ public class RestaurantStatisticsFragment extends BaseFragment {
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH)
         );
+        Calendar calendar = Calendar.getInstance();
+        Date date = DateHelper.parseApiDate(vStartDate.getValue());
+        calendar.setTime(date);
+        dpd.setMinDate(calendar);
         dpd.show(getActivity().getFragmentManager(), "");
     }
 
@@ -157,7 +165,7 @@ public class RestaurantStatisticsFragment extends BaseFragment {
         for (Reservation reservation : reservations) {
             String strResDate = reservation.getDate();
             Date resDate = DateHelper.parseApiDate(strResDate);
-            if (startDate.before(resDate) && endDate.after(resDate)) {
+            if ((startDate.equals(resDate) || endDate.equals(resDate)) || (startDate.before(resDate) && endDate.after(resDate))) {
                 count++;
             }
         }

@@ -30,7 +30,7 @@ public class InputValidationUtils {
      * Returns true if the given value is an acceptable password.
      */
     public static boolean validatePassword(@NonNull String password) {
-        return password.length() > 4;
+        return password.length() > 5;
     }
 
     public static boolean validaPhone(@NonNull String phone) {

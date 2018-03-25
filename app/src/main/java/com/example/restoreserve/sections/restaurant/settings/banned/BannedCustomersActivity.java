@@ -79,16 +79,17 @@ public class BannedCustomersActivity extends BaseActivity{
         rvSearch.setAdapter(searchAdapter);
     }
 
-
     private void handleCustomerClicked(BannedCustomer customer) {
         if (!customer.isBanned) {
             showAlert("Are you sure you want to ban this customer", () -> banCustomer(customer));
+        } else {
+            showAlert("Are you sure you want to remove this customer from banned list", () -> unbanCustomer(customer.getUser()));
         }
     }
 
     private void configureBannedListing() {
         bannedAdapter = new BannedAdapter(getBaseContext(), customer -> {
-
+            showAlert("Are you sure you want to remove this customer from banned list", () -> unbanCustomer(customer));
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseContext());
         rvBanned.setLayoutManager(linearLayoutManager);
@@ -118,13 +119,38 @@ public class BannedCustomersActivity extends BaseActivity{
                 });
     }
 
+    private void unbanCustomer(User customer) {
+        final String id = AppSessionManager.getInstance().getRestaurant().getId();
+        showProgressDialog("Loading");
+        CustomerProvider.rxUnBanCustomer(customer)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleSubscriber<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        dismissProgressDialog();
+                        searchAdapter.notifyDataSetChanged();
+                        bannedAdapter.removeCustomer(customer);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        dismissProgressDialog();
+                    }
+                });
+    }
+
     public void applySearch(String newString) {
         if (users == null) return;
         // create new array
         ArrayList<User> newUsers = new ArrayList<>();
         for (int i = 0; i < users.size(); i++) {
+            // name
             String name = users.get(i).getName();
-            if (name.toLowerCase().startsWith(newString.toLowerCase())) {
+            // phone number
+            String phoneNumber = users.get(i).getPhoneNumber();
+
+            if (name.toLowerCase().startsWith(newString.toLowerCase()) || phoneNumber.startsWith(newString)) {
                 newUsers.add(users.get(i));
             }
         }

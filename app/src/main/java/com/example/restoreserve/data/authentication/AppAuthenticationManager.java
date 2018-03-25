@@ -84,6 +84,60 @@ public class AppAuthenticationManager {
                 });
     }
 
+    public static Single<User> rxUpdateUser(String id, User updatedUser) {
+        return rxFirebaseCheckUserCredentials(updatedUser.getPhoneNumber(), updatedUser.getName())
+                .flatMap(aBoolean ->  {
+                    if (aBoolean) {
+                        return Single.create(singleSubscriber -> {
+                            // Initialize Firestore
+                            FirestoreManager.getInstance().getFirestoreInstance()
+                                    .collection("users")
+                                    .document(id)
+                                    .set(updatedUser.toMap(id), SetOptions.merge())
+                                    .addOnCompleteListener(task -> {
+                                        // check if profile set
+                                        if (task.isSuccessful()) {
+                                            singleSubscriber.onSuccess(null);
+                                        } else {
+                                            // broadcast error
+                                            Exception exception = task.getException();
+                                            singleSubscriber.onError(exception);
+                                        }
+                                    });
+                        }).flatMap(v -> rxGetUser(id));
+                    } else {
+                        return Single.error(new PhoneNumberAlreadyExistsException());
+                    }
+        });
+    }
+
+    public static Single<Restaurant> rxUpdateRestaurant(String id, Restaurant updatedRestaurant) {
+        return rxFirebaseCheckRestaurantCredentials(updatedRestaurant.getPhoneNumber(), updatedRestaurant.getName())
+                .flatMap(aBoolean -> {
+                    if (aBoolean) {
+                        return Single.create(singleSubscriber -> {
+                            // Initialize Firestore
+                            FirestoreManager.getInstance().getFirestoreInstance()
+                                    .collection("restaurants")
+                                    .document(id)
+                                    .set(updatedRestaurant.toMap(id), SetOptions.merge())
+                                    .addOnCompleteListener(task -> {
+                                        // check if profile set
+                                        if (task.isSuccessful()) {
+                                            singleSubscriber.onSuccess(null);
+                                        } else {
+                                            // broadcast error
+                                            Exception exception = task.getException();
+                                            singleSubscriber.onError(exception);
+                                        }
+                                    });
+                        }).flatMap(v -> rxGetRestaurant(id));
+                    } else {
+                        return Single.error(new PhoneNumberAlreadyExistsException());
+                    }
+                });
+    }
+
     /**
      * Returns a {@link Single} that will execute a {@link FirebaseAuth} registration
      * request. Upon success, it will emit the registered {@link FirebaseUser} uid.
@@ -353,46 +407,6 @@ public class AppAuthenticationManager {
                             }
                         });
         });
-    }
-
-    public static Single<User> rxUpdateUser(String id, User updatedUser) {
-        return Single.create(singleSubscriber -> {
-            // Initialize Firestore
-            FirestoreManager.getInstance().getFirestoreInstance()
-                    .collection("users")
-                    .document(id)
-                    .set(updatedUser.toMap(id), SetOptions.merge())
-                    .addOnCompleteListener(task -> {
-                        // check if profile set
-                        if (task.isSuccessful()) {
-                            singleSubscriber.onSuccess(null);
-                        } else {
-                            // broadcast error
-                            Exception exception = task.getException();
-                            singleSubscriber.onError(exception);
-                        }
-                    });
-        }).flatMap(v -> rxGetUser(id));
-    }
-
-    public static Single<Restaurant> rxUpdateRestaurant(String id, Restaurant updatedRestaurant) {
-        return Single.create(singleSubscriber -> {
-            // Initialize Firestore
-            FirestoreManager.getInstance().getFirestoreInstance()
-                    .collection("restaurants")
-                    .document(id)
-                    .set(updatedRestaurant.toMap(id), SetOptions.merge())
-                    .addOnCompleteListener(task -> {
-                        // check if profile set
-                        if (task.isSuccessful()) {
-                            singleSubscriber.onSuccess(null);
-                        } else {
-                            // broadcast error
-                            Exception exception = task.getException();
-                            singleSubscriber.onError(exception);
-                        }
-                    });
-        }).flatMap(v -> rxGetRestaurant(id));
     }
 
     public static class AccountNotFoundException extends Exception {

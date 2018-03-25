@@ -64,7 +64,7 @@ public class RestaurantProfileFragment extends BaseFragment {
     private Button btnSignUp;
     // data
     boolean withCredentials = false;
-    ArrayList<Table> tables;
+    ArrayList<Table> tables = new ArrayList<>();
 
     public RestaurantProfileFragment() {
     }
@@ -157,9 +157,7 @@ public class RestaurantProfileFragment extends BaseFragment {
 
         vTables.setOnClickListener(v -> {
             TablesDialogFragment fragment = new TablesDialogFragment();
-            if (tables != null) {
-                fragment.setTables(tables);
-            }
+            fragment.setTables(tables);
             fragment.setListener(new TablesDialogFragment.OnDialogFragmentListener() {
                 @Override
                 public void submit(ArrayList<Table> newTables) {
@@ -241,6 +239,16 @@ public class RestaurantProfileFragment extends BaseFragment {
         // delay
         String delay = String.valueOf(restaurant.getConfirmationDelayMins());
         etConfirmationDelay.setText(delay);
+        // opening hour
+        String openingHour = restaurant.getOpeningHour();
+        vOpeningHour.updateValue(openingHour);
+        // closing hour
+        String closingHour = restaurant.getClosingHour();
+        vClosingHour.updateValue(closingHour);
+        // tables
+        final ArrayList<Table> tables = restaurant.getTables();
+        this.tables.addAll(tables);
+        vTables.updateValue(String.valueOf(tables.size()));
     }
 
     private void handleSubmitClicked() {
@@ -316,7 +324,7 @@ public class RestaurantProfileFragment extends BaseFragment {
             showToast("Please set closing hour");
             return false;
         }
-        if (!InputValidationUtils.validateWebsite(restaurant.getWebsite())) {
+        if (restaurant.getWebsite().length() != 0 && !InputValidationUtils.validateWebsite(restaurant.getWebsite())) {
             showToast("Please enter a valid website");
             return false;
         }
