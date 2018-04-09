@@ -19,9 +19,11 @@ import com.example.restoreserve.data.reservations.ReservationsProvider;
 import com.example.restoreserve.data.reservations.model.Reservation;
 import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.data.user.User;
+import com.example.restoreserve.sections.restaurant.events.RestaurantEventsFragment;
 import com.example.restoreserve.sections.restaurant.reservations.RestaurantReservationsFragment;
 import com.example.restoreserve.sections.restaurant.settings.RestaurantSettingsFragment;
 import com.example.restoreserve.sections.restaurant.statistics.RestaurantStatisticsFragment;
+import com.example.restoreserve.sections.restaurant.tables.RestaurantTablesFragment;
 import com.example.restoreserve.utils.DateHelper;
 
 import java.util.ArrayList;
@@ -43,7 +45,9 @@ public class RestaurantHomeActivity extends BaseActivity {
     private ViewPager viewPager;
     // fragments
     private RestaurantReservationsFragment reservationsFragment;
+    private RestaurantTablesFragment tablesFragment;
     private RestaurantStatisticsFragment statisticsFragment;
+    private RestaurantEventsFragment eventsFragment;
     private RestaurantSettingsFragment settingsFragment;
 
     @Override
@@ -59,14 +63,10 @@ public class RestaurantHomeActivity extends BaseActivity {
     private void subscribeToSession() {
         AppSessionManager.getInstance().subscribeToTracker(new Subscriber<AppSessionManager.SessionState>() {
             @Override
-            public void onCompleted() {
-
-            }
+            public void onCompleted() {}
 
             @Override
-            public void onError(Throwable e) {
-
-            }
+            public void onError(Throwable e) {}
 
             @Override
             public void onNext(AppSessionManager.SessionState sessionState) {
@@ -113,7 +113,9 @@ public class RestaurantHomeActivity extends BaseActivity {
 
     private void initFragments() {
         reservationsFragment = RestaurantReservationsFragment.newInstance();
+        tablesFragment = RestaurantTablesFragment.newInstance();
         statisticsFragment = RestaurantStatisticsFragment.newInstance();
+        eventsFragment = RestaurantEventsFragment.newInstance();
         settingsFragment = RestaurantSettingsFragment.newInstance();
     }
 
@@ -122,14 +124,18 @@ public class RestaurantHomeActivity extends BaseActivity {
         viewPager =  findViewById(R.id.viewPager);
 
         AHBottomNavigationItem item1 = new AHBottomNavigationItem("Reservations", R.drawable.ic_local_library_white_24dp);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Statistics", R.drawable.ic_insert_chart_white_24dp);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Settings", R.drawable.ic_settings_white_24dp);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Tables", R.drawable.ic_local_dining_white_24dp);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Statistics", R.drawable.ic_insert_chart_white_24dp);
+        AHBottomNavigationItem item4 = new AHBottomNavigationItem("Events", R.drawable.ic_event_white_24dp);
+        AHBottomNavigationItem item5 = new AHBottomNavigationItem("Settings", R.drawable.ic_settings_white_24dp);
 
         ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
 
         bottomNavigationItems.add(item1);
         bottomNavigationItems.add(item2);
         bottomNavigationItems.add(item3);
+        bottomNavigationItems.add(item4);
+        bottomNavigationItems.add(item5);
 
         bottomNavigation.setAccentColor(ContextCompat.getColor(getBaseContext(), R.color.colorAccent));
         bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
@@ -148,7 +154,7 @@ public class RestaurantHomeActivity extends BaseActivity {
 
     private void setupPager() {
         SectionsPagerAdapter pagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        viewPager.setOffscreenPageLimit(1);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(pagerAdapter);
         // set view pager item as current section
         viewPager.setCurrentItem(0, false);
@@ -162,9 +168,23 @@ public class RestaurantHomeActivity extends BaseActivity {
         if (position == 0) {
             return reservationsFragment;
         } else if (position == 1){
+            return tablesFragment;
+        } else if (position == 2){
             return statisticsFragment;
+        } else if (position == 3){
+            return eventsFragment;
         } else {
             return settingsFragment;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (viewPager.getCurrentItem() != 0) {
+            viewPager.setCurrentItem(0);
+            bottomNavigation.setCurrentItem(0);
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -184,7 +204,7 @@ public class RestaurantHomeActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 5;
         }
     }
 }

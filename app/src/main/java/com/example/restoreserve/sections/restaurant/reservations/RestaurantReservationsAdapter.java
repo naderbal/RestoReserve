@@ -96,9 +96,15 @@ public class RestaurantReservationsAdapter extends RecyclerView.Adapter<Restaura
         return reservations;
     }
 
+    public void replaceReservations(ArrayList<Reservation> filtered) {
+        this.reservations.clear();
+        this.reservations.addAll(filtered);
+        notifyDataSetChanged();
+    }
+
     public class TableViewHolder extends RecyclerView.ViewHolder{
 
-        TextView tvName,tvTableName, tvPhoneNumber, tvDate, tvTime;
+        TextView tvName,tvTableName, tvPhoneNumber, tvDate, tvTime, tvConfirmed;
         View vContainer;
 
         public TableViewHolder(View itemView) {
@@ -109,6 +115,7 @@ public class RestaurantReservationsAdapter extends RecyclerView.Adapter<Restaura
             tvPhoneNumber = itemView.findViewById(R.id.tvPhoneNumber);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvTime = itemView.findViewById(R.id.tvTime);
+            tvConfirmed = itemView.findViewById(R.id.tvConfirmed);
         }
 
         public void bind(Reservation res) {
@@ -120,15 +127,25 @@ public class RestaurantReservationsAdapter extends RecyclerView.Adapter<Restaura
 
             // check reservation confirmed
             if(res.isConfirmed()) {
-                // confirmed show green bg
-                vContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.reservation_confirmed_bg));
+                tvConfirmed.setVisibility(View.VISIBLE);
+                if (res.hasFeedback()) {
+                    tvConfirmed.setText("Feedback Submitted");
+                } else {
+                    tvConfirmed.setText("Confirmed");
+                }
             } else {
                 // show default background and set click listener on container
-                vContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.reservation_default_bg));
+                tvConfirmed.setVisibility(View.GONE);
             }
             vContainer.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onReservationClicked(res);
+                    if(res.hasFeedback()) {
+                        if (listener != null) {
+                            listener.onFeedbackClicked(res);
+                        }
+                    } else {
+                        listener.onReservationClicked(res);
+                    }
                 }
             });
         }
@@ -136,5 +153,6 @@ public class RestaurantReservationsAdapter extends RecyclerView.Adapter<Restaura
 
     public interface OnReservationsListener {
         void onReservationClicked(Reservation reservation);
+        void onFeedbackClicked(Reservation reservation);
     }
 }

@@ -65,7 +65,27 @@
             android:textColor="@color/black"
             android:layout_marginStart="@dimen/content_margin_normal"
             tools:text="220"/>
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="34dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/content_margin_large"
+            android:text="Number of reservations without the app:"/>
+
+        <TextView
+            android:id="@+id/tvOutsideReservationsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginStart="@dimen/content_margin_normal"
+            tools:text="220"/>
     </LinearLayout>
 
 </LinearLayout>

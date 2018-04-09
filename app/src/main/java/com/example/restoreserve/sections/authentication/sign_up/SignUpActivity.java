@@ -1,5 +1,6 @@
 package com.example.restoreserve.sections.authentication.sign_up;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -10,12 +11,15 @@ import com.example.restoreserve.data.restaurant.model.Restaurant;
 import com.example.restoreserve.data.user.User;
 import com.example.restoreserve.sections.authentication.sign_up.customer.CustomerProfileFragment;
 import com.example.restoreserve.sections.authentication.sign_up.restaurant.RestaurantProfileFragment;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 
 import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class SignUpActivity extends BaseActivity {
+    CustomerProfileFragment fragmentCust;
+    RestaurantProfileFragment fragmentRest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,9 +27,9 @@ public class SignUpActivity extends BaseActivity {
         final boolean isCustomer = getIntent().getBooleanExtra("is_customer", false);
         if (isCustomer) {
             // fragment
-            CustomerProfileFragment fragment = CustomerProfileFragment.newInstance(true);
-            replaceFragment(R.id.vContainer, fragment, "fragment1");
-            fragment.setListener(new CustomerProfileFragment.ProfileFragmentInteractionListener() {
+            fragmentCust = CustomerProfileFragment.newInstance(true);
+            replaceFragment(R.id.vContainer, fragmentCust, "fragment1");
+            fragmentCust.setListener(new CustomerProfileFragment.ProfileFragmentInteractionListener() {
                 @Override
                 public void onSubmitProfile(User user) {
                     submitCustomerRegistration(user);
@@ -33,9 +37,9 @@ public class SignUpActivity extends BaseActivity {
             });
         } else {
             // fragment
-            RestaurantProfileFragment fragment = RestaurantProfileFragment.newInstance(true);
-            replaceFragment(R.id.vContainer, fragment, "fragment2");
-            fragment.setListener(new RestaurantProfileFragment.ProfileFragmentInteractionListener() {
+            fragmentRest = RestaurantProfileFragment.newInstance(true);
+            replaceFragment(R.id.vContainer, fragmentRest, "fragment2");
+            fragmentRest.setListener(new RestaurantProfileFragment.ProfileFragmentInteractionListener() {
                 @Override
                 public void onSubmitProfile(Restaurant restaurant, String password) {
                     submitRestaurantRegistration(restaurant, password);
@@ -62,6 +66,8 @@ public class SignUpActivity extends BaseActivity {
                 dismissProgressDialog();
                 if (error instanceof AppAuthenticationManager.PhoneNumberAlreadyExistsException) {
                     showToast("User with this phone number already exists");
+                } else if (error instanceof FirebaseAuthInvalidCredentialsException) {
+                    showToast("Email address already used, please choose another email");
                 } else {
                     Toast.makeText(getBaseContext(), "Registration Failed", Toast.LENGTH_SHORT).show();
                 }
@@ -93,5 +99,14 @@ public class SignUpActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (getSupportFragmentManager().findFragmentById(R.id.vContainer) instanceof RestaurantProfileFragment) {
+            fragmentRest.onActivityResult(requestCode, resultCode, data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

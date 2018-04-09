@@ -14,25 +14,10 @@ import com.example.restoreserve.R;
 
 
 /**
- * Created by Nabil on 3/23/2017.
+ *
  */
 public class BaseFragment extends Fragment {
     protected Handler handler = new Handler();
-    // shared
-    protected final int POSITION_TAB_FACEBOOK = 0;
-    protected final int POSITION_TAB_INSTAGRAM = 1;
-    protected final int POSITION_TAB_YOUTUBE = 2;
-    protected final int SOCIAL_TABS_COUNT = 3;
-    // args
-    protected static final String ARG_AUTO_LOAD = "auto_load";
-    protected static final String ARG_PLATFORM = "arg_platform";
-    // bundle
-    protected static final String BUNDLE_PLATFORM = "bundle_platform";
-    protected static final String BUNDLE_AUTOLOAD = "bundle_autoload";
-    // data
-    protected boolean autoLoad = false;
-    // log
-    protected String TAG = "BaseFragment";
 
     // BEHAVIOR //
 

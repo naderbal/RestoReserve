@@ -1,5 +1,6 @@
 package com.example.restoreserve.sections.restaurant.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -17,13 +18,14 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class RestaurantEditProfileActivity extends BaseActivity{
+    RestaurantProfileFragment fragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         // fragment
-        RestaurantProfileFragment fragment = RestaurantProfileFragment.newInstance(false);
+        fragment = RestaurantProfileFragment.newInstance(false);
         replaceFragment(R.id.vContainer, fragment, "fragment");
         fragment.setListener(new RestaurantProfileFragment.ProfileFragmentInteractionListener() {
             @Override
@@ -56,5 +58,14 @@ public class RestaurantEditProfileActivity extends BaseActivity{
                         Toast.makeText(getBaseContext(), "Update Failed", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (getSupportFragmentManager().findFragmentById(R.id.vContainer) instanceof RestaurantProfileFragment) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

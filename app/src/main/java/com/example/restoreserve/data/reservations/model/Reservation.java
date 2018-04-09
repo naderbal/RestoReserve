@@ -6,10 +6,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  *
  */
-public class Reservation {
+public class Reservation implements Serializable{
     private String id;
     private String restoId;
     private String restoName;
@@ -20,6 +22,7 @@ public class Reservation {
     private String time;
     private String tableId;
     private boolean isConfirmed;
+    private boolean hasFeedback;
 
     public Reservation(String restoId,
                        String restoName,
@@ -79,6 +82,9 @@ public class Reservation {
         if (snapshot.contains(StorageKeys.IS_CONFIRMED)) {
             isConfirmed = snapshot.getBoolean(StorageKeys.IS_CONFIRMED);
         }
+         if (snapshot.contains(StorageKeys.HAS_FEEDBACK)) {
+            hasFeedback = snapshot.getBoolean(StorageKeys.HAS_FEEDBACK);
+        }
     }
 
     public Reservation(JSONObject jsonObject) {
@@ -112,6 +118,9 @@ public class Reservation {
             }
             if (!jsonObject.isNull(StorageKeys.IS_CONFIRMED)) {
                 this.isConfirmed = jsonObject.getBoolean(StorageKeys.IS_CONFIRMED);
+            }
+            if (!jsonObject.isNull(StorageKeys.HAS_FEEDBACK)) {
+                this.hasFeedback = jsonObject.getBoolean(StorageKeys.HAS_FEEDBACK);
             }
         } catch (JSONException ignored) {
 
@@ -162,6 +171,10 @@ public class Reservation {
         isConfirmed = confirmed;
     }
 
+    public boolean hasFeedback() {
+        return hasFeedback;
+    }
+
     public JSONObject toJSON() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -175,9 +188,14 @@ public class Reservation {
             jsonObject.put(StorageKeys.TIME, time);
             jsonObject.put(StorageKeys.TABLE_ID, tableId);
             jsonObject.put(StorageKeys.IS_CONFIRMED, isConfirmed);
+            jsonObject.put(StorageKeys.HAS_FEEDBACK, hasFeedback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return jsonObject;
+    }
+
+    public void setHasFeedback(boolean hasFeedback) {
+        this.hasFeedback = hasFeedback;
     }
 }

@@ -16,8 +16,11 @@ import com.example.restoreserve.base.BaseFragment;
 import com.example.restoreserve.data.reservations.ReservationsManager;
 import com.example.restoreserve.data.reservations.ReservationsProvider;
 import com.example.restoreserve.data.reservations.model.Reservation;
+import com.example.restoreserve.utils.DateHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import rx.SingleSubscriber;
 import rx.Subscriber;
@@ -28,7 +31,6 @@ import rx.schedulers.Schedulers;
  *
  */
 public class ReservationsFragment extends BaseFragment {
-
     private RecyclerView rvContent;
     private ReservationsAdapter adapter;
 
@@ -74,12 +76,32 @@ public class ReservationsFragment extends BaseFragment {
         adapter = new ReservationsAdapter(getContext(), new ReservationsAdapter.OnReservationsListener() {
             @Override
             public void onReservationClicked(Reservation reservation) {
-                showReservationAlert(reservation);
+                if(reservation.isConfirmed()) {
+                    if (!reservation.hasFeedback()) {
+                        final Date resDate = DateHelper.parseApiDate(reservation.getDate());
+                        final Date currentDate = Calendar.getInstance().getTime();
+                        if (currentDate.after(resDate)) {
+                            openFeedbackDialog(reservation);
+                        }
+                    }
+                } else {
+                    showReservationAlert(reservation);
+                }
             }
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvContent.setLayoutManager(linearLayoutManager);
         rvContent.setAdapter(adapter);
+    }
+
+    private void openFeedbackDialog(Reservation reservation) {
+        ReservationFeedbackDialogFragment fragment = ReservationFeedbackDialogFragment.newInstance(reservation);
+        fragment.setListener(() -> {
+            fragment.dismiss();
+            reservation.setHasFeedback(true);
+            adapter.notifyDataSetChanged();
+        });
+        fragment.show(getActivity().getFragmentManager(), "");
     }
 
     protected void showReservationAlert(Reservation reservation) {

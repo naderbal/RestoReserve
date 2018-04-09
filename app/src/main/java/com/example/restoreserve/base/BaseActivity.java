@@ -22,9 +22,6 @@ import com.example.restoreserve.R;
  *
  */
 public abstract class BaseActivity extends AppCompatActivity {
-    public static final int CONFIRMED = 250;
-    public static final int DECLINED = 251;
-    public static final int LOGOUT = 252;
     // result codes
     public static final int RESULT_CODE_LOGIN_SUCCESSFUL = 50;
     public static final int RESULT_CODE_LOG_OUT = 51;
@@ -32,7 +29,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public static final int RESULT_CODE_NEW_REGISTRATION = 53;
     public static final int RESULT_CODE_REGISTRATION_SUCCESSFUL = 54;
     public static final int RESULT_CODE_UPDATE_SUCCESSFUL = 55;
-    public static final int RESULT_CODE_ORDER_PLACED_SUCCESSFULLY = 56;
     // request codes
     public static final int RC_HOME = 10;
     public static final int RC_WELCOME = 11;

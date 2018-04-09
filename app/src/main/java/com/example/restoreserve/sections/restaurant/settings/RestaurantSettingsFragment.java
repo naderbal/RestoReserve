@@ -11,9 +11,14 @@ import android.widget.TextView;
 import com.example.restoreserve.R;
 import com.example.restoreserve.base.BaseActivity;
 import com.example.restoreserve.base.BaseFragment;
+import com.example.restoreserve.data.authentication.AppAuthenticationManager;
 import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.sections.authentication.welcome.WelcomeActivity;
 import com.example.restoreserve.sections.restaurant.settings.banned.BannedCustomersActivity;
+
+import rx.SingleSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class RestaurantSettingsFragment extends BaseFragment {
     final String strLogout = "Log Out";
@@ -22,7 +27,7 @@ public class RestaurantSettingsFragment extends BaseFragment {
     TextView tvAboutUs;
     TextView tvLogout;
     TextView tvBannedlist;
-
+    TextView tvDeactivate;
 
     public RestaurantSettingsFragment() {
     }
@@ -68,6 +73,30 @@ public class RestaurantSettingsFragment extends BaseFragment {
         tvBannedlist.setOnClickListener(v -> {
             openBannedList();
         });
+        tvDeactivate.setOnClickListener(v -> {
+            showAlert("Are you sure you want to deactivate your account", this::deactivate);
+        });
+    }
+
+    private void deactivate() {
+        showProgressDialog("Deactivating");
+        final String id = AppSessionManager.getInstance().getRestaurant().getId();
+        AppAuthenticationManager.deactivateRestaurant(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleSubscriber<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        dismissProgressDialog();
+                        logout();
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        dismissProgressDialog();
+                        showToast("Something went wrong");
+                    }
+                });
     }
 
     private void openBannedList() {
@@ -114,5 +143,6 @@ public class RestaurantSettingsFragment extends BaseFragment {
         tvAboutUs = view.findViewById(R.id.tvAboutUs);
         tvLogout = view.findViewById(R.id.tvLogout);
         tvBannedlist = view.findViewById(R.id.tvBannedlist);
+        tvDeactivate = view.findViewById(R.id.tvDeactivate);
     }
 }

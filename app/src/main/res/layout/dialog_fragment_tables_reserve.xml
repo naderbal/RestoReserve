@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minWidth="320dp"
+    android:paddingStart="@dimen/content_margin_large"
+    android:paddingEnd="@dimen/content_margin_large"
+    android:paddingTop="@dimen/content_margin_large">
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textCapWords"
+        android:layout_marginTop="@dimen/content_margin_large"
+        android:hint="Customer Name"/>
+
+    <EditText
+        android:id="@+id/etPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_margin_large"
+        android:inputType="number"
+        android:hint="Customer phone number"/>
+
+    <Button
+        android:id="@+id/btnReservation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Make Reservation"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:backgroundTint="@color/colorAccent"
+        android:textColor="@color/white"
+        android:layout_gravity="center"/>
+</LinearLayout>

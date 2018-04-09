@@ -11,8 +11,11 @@ import android.widget.TextView;
 
 import com.example.restoreserve.R;
 import com.example.restoreserve.data.reservations.model.Reservation;
+import com.example.restoreserve.utils.DateHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  *
@@ -99,7 +102,7 @@ public class ReservationsAdapter extends RecyclerView.Adapter<ReservationsAdapte
 
     public class TableViewHolder extends RecyclerView.ViewHolder{
 
-        TextView tvRestaurant, tvDate, tvTime;
+        TextView tvRestaurant, tvDate, tvTime, tvFeedback;
         View vContainer;
 
         public TableViewHolder(View itemView) {
@@ -108,6 +111,7 @@ public class ReservationsAdapter extends RecyclerView.Adapter<ReservationsAdapte
             tvRestaurant = itemView.findViewById(R.id.tvRestaurant);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvTime = itemView.findViewById(R.id.tvTime);
+            tvFeedback = itemView.findViewById(R.id.tvFeedback);
         }
 
         public void bind(Reservation res) {
@@ -119,15 +123,27 @@ public class ReservationsAdapter extends RecyclerView.Adapter<ReservationsAdapte
             if(res.isConfirmed()) {
                 // confirmed show green bg
                 vContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.reservation_confirmed_bg));
+                if (res.hasFeedback()) {
+                    tvFeedback.setText("Feedback Submitted");
+                } else {
+                    final Date resDate = DateHelper.parseApiDate(res.getDate());
+                    final Date currentDate = Calendar.getInstance().getTime();
+                    if (currentDate.after(resDate)) {
+                        tvFeedback.setText("Submit Feedback");
+                    } else {
+                        tvFeedback.setVisibility(View.GONE);
+                    }
+                }
             } else {
                 // show default background and set click listener on container
                 vContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.reservation_default_bg));
-                vContainer.setOnClickListener(v -> {
-                    if (listener != null) {
-                        listener.onReservationClicked(res);
-                    }
-                });
+                tvFeedback.setVisibility(View.GONE);
             }
+            vContainer.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onReservationClicked(res);
+                }
+            });
         }
     }
 

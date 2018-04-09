@@ -165,7 +165,7 @@ public class WelcomeActivity extends BaseActivity implements WelcomeContract.Vie
 
     @Override
     public void showInvalidPassword() {
-        tilPassword.setError("Invalid Password, should be more than 4 characters");
+        tilPassword.setError("Invalid Password, should be more than 5 characters");
     }
 
     @Override

@@ -240,6 +240,16 @@ public class HomeActivity extends AppCompatActivity {
         viewPager.setCurrentItem(0, false);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (viewPager.getCurrentItem() != 0) {
+            viewPager.setCurrentItem(0);
+            bottomNavigation.setCurrentItem(0);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     /**
      * Returns the fragment at the given position.
      */

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/content_margin_large">
+
+   <TextView
+       android:id="@+id/tvEventMessage"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       tools:text="Two pizzas for the the price of one\n"/>
+    <View
+        style="@style/HorizontalSeparatorLight"
+        android:layout_marginTop="@dimen/content_margin_large"/>
+</LinearLayout>

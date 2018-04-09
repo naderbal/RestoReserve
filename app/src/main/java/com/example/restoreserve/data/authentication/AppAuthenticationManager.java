@@ -6,6 +6,8 @@ import com.example.restoreserve.data.FirestoreManager;
 import com.example.restoreserve.data.restaurant.model.Restaurant;
 import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.data.user.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -74,7 +76,7 @@ public class AppAuthenticationManager {
     public static Single<Restaurant> rxRegisterRestaurant(@NonNull Restaurant registrationUser, @NonNull String password) {
         // get email/password
         String email = registrationUser.getEmail();
-        return rxFirebaseCheckRestaurantCredentials(registrationUser.getPhoneNumber(), registrationUser.getName())
+        return rxFirebaseCheckRestaurantCredentials(registrationUser.getId(), registrationUser.getPhoneNumber(), registrationUser.getName())
                 .flatMap(aBoolean -> {
                     if (aBoolean) {
                         return rxFirebaseRegister(email, password).flatMap(id -> rxStoreRestaurant(id, registrationUser));
@@ -112,7 +114,7 @@ public class AppAuthenticationManager {
     }
 
     public static Single<Restaurant> rxUpdateRestaurant(String id, Restaurant updatedRestaurant) {
-        return rxFirebaseCheckRestaurantCredentials(updatedRestaurant.getPhoneNumber(), updatedRestaurant.getName())
+        return rxFirebaseCheckRestaurantCredentials(id, updatedRestaurant.getPhoneNumber(), updatedRestaurant.getName())
                 .flatMap(aBoolean -> {
                     if (aBoolean) {
                         return Single.create(singleSubscriber -> {
@@ -208,7 +210,7 @@ public class AppAuthenticationManager {
      * Returns a {@link Single} that will execute a {@link FirebaseAuth} registration
      * request. Upon success, it will emit the registered {@link FirebaseUser} uid.
      */
-    private static Single<Boolean> rxFirebaseCheckRestaurantCredentials(@NonNull String phoneNumber, String name) {
+    private static Single<Boolean> rxFirebaseCheckRestaurantCredentials(String id, @NonNull String phoneNumber, String name) {
         return Single.create(singleSubscriber ->
                 // trigger Firebase registration request
                 FirestoreManager.getInstance()
@@ -224,11 +226,11 @@ public class AppAuthenticationManager {
                                     Restaurant restaurant = new Restaurant(snapshot);
                                     final String phoneNumber1 = restaurant.getPhoneNumber();
                                     final String name1 = restaurant.getName();
-                                    if (phoneNumber1 !=null && phoneNumber1.equals(phoneNumber)) {
+                                    if (!id.equals(restaurant.getId()) && phoneNumber1 !=null && phoneNumber1.equals(phoneNumber)) {
                                         singleSubscriber.onError(new PhoneNumberAlreadyExistsException());
                                         return;
                                     }
-                                    if (name1 != null && name1.equals(name)) {
+                                    if (!id.equals(restaurant.getId()) && name1 != null && name1.equals(name)) {
                                         singleSubscriber.onError(new NameAlreadyExistsException());
                                         return;
                                     }
@@ -408,6 +410,75 @@ public class AppAuthenticationManager {
                         });
         });
     }
+
+    public static Single<Boolean> deactivateUser(String userId) {
+        return Single.create(singleSubscriber -> {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user == null) {
+                singleSubscriber.onError(new Exception());
+                return;
+            }
+            user.delete()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                singleSubscriber.onSuccess(true);
+                            } else {
+                                singleSubscriber.onError(new Exception());
+                            }
+                        }
+                    });
+        }).flatMap(a -> rxDeleteUser(userId));
+    }
+
+    public static Single<Boolean> deactivateRestaurant(String restId) {
+        return Single.create(singleSubscriber -> {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user == null) {
+                singleSubscriber.onError(new Exception());
+                return;
+            }
+            user.delete()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                singleSubscriber.onSuccess(true);
+                            } else {
+                                singleSubscriber.onError(new Exception());
+                            }
+                        }
+                    });
+        }).flatMap(a -> rxDeleteRestaurant(restId));
+    }
+
+    @NonNull
+    private static Single<Boolean> rxDeleteUser(String userId) {
+        return Single.create(singleSubscriber -> {
+            FirestoreManager.getInstance().getFirestoreInstance()
+                    .collection("users")
+                    .document(userId)
+                    .delete()
+                    .addOnCompleteListener(task -> {
+                        singleSubscriber.onSuccess(true);
+                    });
+                });
+    }
+
+    @NonNull
+    private static Single<Boolean> rxDeleteRestaurant(String restId) {
+        return Single.create(singleSubscriber -> {
+            FirestoreManager.getInstance().getFirestoreInstance()
+                    .collection("restaurants")
+                    .document(restId)
+                    .delete()
+                    .addOnCompleteListener(task -> {
+                        singleSubscriber.onSuccess(true);
+                    });
+                });
+    }
+
 
     public static class AccountNotFoundException extends Exception {
 

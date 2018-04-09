@@ -17,6 +17,18 @@
         android:layout_marginTop="@dimen/content_margin_large"/>
 
     <TextView
+        android:id="@+id/tvAboutUs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_normal"
+        android:layout_marginTop="@dimen/content_margin_large"
+        android:text="About Us"/>
+
+    <View
+        style="@style/HorizontalSeparatorLight"
+        android:layout_marginTop="@dimen/content_margin_large"/>
+
+    <TextView
         android:id="@+id/tvLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,13 +40,14 @@
         style="@style/HorizontalSeparatorLight"
         android:layout_marginTop="@dimen/content_margin_large"/>
 
+
     <TextView
-        android:id="@+id/tvAboutUs"
+        android:id="@+id/tvDeactivate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/content_margin_normal"
         android:layout_marginTop="@dimen/content_margin_large"
-        android:text="About Us"/>
+        android:text="Deactivate Account"/>
 
     <View
         style="@style/HorizontalSeparatorLight"

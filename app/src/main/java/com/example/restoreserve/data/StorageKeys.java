@@ -35,4 +35,12 @@ public class StorageKeys {
     public static final String CONFIRMATION_DELAY_MINS = "confirmation_delayed_minutes";
     public static final String CUSTOMER_NAME = "customer_name";
     public static final String CUSTOMER_PHONE_NUMBER = "customer_phone_number";
+    public static final String RATING = "rating";
+    public static final String FEEDBACK_MESSAGE = "feedback_message";
+    public static final String FEEDBACKS = "feedbacks";
+    public static final String RESRVATION_ID = "reservation_id";
+    public static final String HAS_FEEDBACK = "has_feedback";
+    public static final String EVENTS = "events";
+    public static final String RESTAURANT_ID = "restaurant_id";
+    public static final String EVENT_MESSAGE = "event_message";
 }

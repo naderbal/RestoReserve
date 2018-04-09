@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -36,6 +37,7 @@ import com.example.restoreserve.sections.customer.restaurant.tables_listing.Tabl
 import com.example.restoreserve.sections.splash.SplashActivity;
 import com.example.restoreserve.utils.ui.CustomInputSelectorView;
 import com.example.restoreserve.utils.DateHelper;
+import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.Timepoint;
@@ -58,7 +60,7 @@ import rx.schedulers.Schedulers;
  */
 public class RestaurantActivity extends BaseActivity {
     public static final String EXTRA_RESTAURANT = "restaurant";
-    TextView tvName, tvBranch, tvPhoneNumber, tvAddress, tvWebsite;
+    TextView tvName, tvBranch, tvPhoneNumber, tvAddress, tvWebsite, tvOpeningHours;
     CustomInputSelectorView vDate, vTime;
     Button btnSubmit;
     Button btnWaitinglist;
@@ -66,6 +68,7 @@ public class RestaurantActivity extends BaseActivity {
     RecyclerView rvTables;
     ProgressBar pbTablesLoading;
     TablesAdapter tablesAdapter;
+    ImageView ivTables;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,6 +84,7 @@ public class RestaurantActivity extends BaseActivity {
 
     private void initViews() {
         tvName = findViewById(R.id.tvName);
+        tvOpeningHours = findViewById(R.id.tvOpeningHours);
         tvBranch = findViewById(R.id.tvBranch);
         tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
         tvAddress = findViewById(R.id.tvAddress);
@@ -91,6 +95,7 @@ public class RestaurantActivity extends BaseActivity {
         btnSubmit = findViewById(R.id.btnSubmit);
         btnWaitinglist = findViewById(R.id.btnWaitinglist);
         pbTablesLoading = findViewById(R.id.pbTablesLoading);
+        ivTables = findViewById(R.id.ivTables);
         // click listeners
         vDate.setOnClickListener(v -> openDate());
         vTime.setOnClickListener(v -> openTime());
@@ -124,6 +129,17 @@ public class RestaurantActivity extends BaseActivity {
             tvWebsite.setText(website);
         } else {
             tvWebsite.setVisibility(View.GONE);
+        }
+        tvOpeningHours.setText(restaurant.getOpeningHour() +" - " +restaurant.getClosingHour());
+
+        final String tablesPicUrl = restaurant.getTablesPicUrl();
+        if (tablesPicUrl != null) {
+            Picasso.with(getBaseContext())
+                    .load(tablesPicUrl)
+                    .placeholder(R.drawable.progress_animation)
+                    .into(ivTables);
+        } else{
+            ivTables.setVisibility(View.GONE);
         }
     }
 
@@ -211,9 +227,19 @@ public class RestaurantActivity extends BaseActivity {
         final String date = vDate.getValue();
         final String time = vTime.getValue();
         final String tableId = table.getId();
+        final Date resDate = DateHelper.parseDate(date + " " + time, "dd-MM-yyyy hh:mm a");
+        final Calendar instance = Calendar.getInstance();
+        instance.setTime(resDate);
+        instance.add(Calendar.HOUR, 1);
+
+        final Date resTime = instance.getTime();
+        final Date currentDate = Calendar.getInstance().getTime();
+
+        boolean isConfirmed = false;
+        if (resTime.after(currentDate)) isConfirmed = true;
         // show loading
         showProgressDialog("Reserving table");
-        Reservation reservation = new Reservation(restId, restName, userId, userName, userPhonenumber, date, time, tableId, false);
+        Reservation reservation = new Reservation(restId, restName, userId, userName, userPhonenumber, date, time, tableId, isConfirmed);
         ReservationsProvider.rxReserveTable(reservation)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

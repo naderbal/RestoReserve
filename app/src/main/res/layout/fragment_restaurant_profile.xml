@@ -183,6 +183,20 @@
                     android:hint="Confirmation Delay In Minutes"/>
             </android.support.design.widget.TextInputLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:text="Upload your tables image"/>
+
+            <Button
+                android:id="@+id/btnPicUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="Upload"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

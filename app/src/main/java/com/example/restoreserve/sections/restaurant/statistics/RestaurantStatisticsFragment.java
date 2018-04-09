@@ -37,7 +37,7 @@ import rx.schedulers.Schedulers;
 public class RestaurantStatisticsFragment extends BaseFragment {
     Button btnSubmit;
     CustomInputSelectorView vStartDate, vEndDate;
-    TextView tvReservationsCount;
+    TextView tvReservationsCount, tvOutsideReservationsCount;
 
     public static RestaurantStatisticsFragment newInstance() {
         Bundle args = new Bundle();
@@ -59,6 +59,7 @@ public class RestaurantStatisticsFragment extends BaseFragment {
         vStartDate = view.findViewById(R.id.vStartDate);
         vEndDate = view.findViewById(R.id.vEndDate);
         tvReservationsCount = view.findViewById(R.id.tvReservationsCount);
+        tvOutsideReservationsCount = view.findViewById(R.id.tvOutsideReservationsCount);
         btnSubmit.setOnClickListener(v -> getReservations());
         vStartDate.setOnClickListener(v -> openStartDate());
         vEndDate.setOnClickListener(v -> openEndDate());
@@ -161,14 +162,20 @@ public class RestaurantStatisticsFragment extends BaseFragment {
         if (!strEndDate.equals(CustomInputSelectorView.DEFAULT_VALUE)) {
             endDate = DateHelper.parseApiDate(strEndDate);
         }
-        int count = 0;
+        int appCount = 0;
+        int outsideCount = 0;
         for (Reservation reservation : reservations) {
             String strResDate = reservation.getDate();
             Date resDate = DateHelper.parseApiDate(strResDate);
             if ((startDate.equals(resDate) || endDate.equals(resDate)) || (startDate.before(resDate) && endDate.after(resDate))) {
-                count++;
+                if (reservation.getCustomerId() != null) {
+                    appCount++;
+                } else {
+                    outsideCount++;
+                }
             }
         }
-        tvReservationsCount.setText(String.valueOf(count));
+        tvReservationsCount.setText(String.valueOf(appCount));
+        tvOutsideReservationsCount.setText(String.valueOf(outsideCount));
     }
 }
