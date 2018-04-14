@@ -17,10 +17,6 @@ import rx.Subscriber;
 import rx.subjects.PublishSubject;
 import rx.subjects.ReplaySubject;
 
-/**
- * Created by naderbaltaji on 12/5/17.
- */
-
 public class ReservationsManager {
 
     private static ReservationsManager cartManager;
@@ -94,9 +90,7 @@ public class ReservationsManager {
         reservationsTracker.onNext(items.size());
     }
 
-    /**
-     * Class managing the storage of trellis session data.
-     */
+
     private static class Cache extends SharedPreferencesCache {
         private final String PREF_NAME = "reservations_manager";
         private final String RESERVATIONS = "reservations";

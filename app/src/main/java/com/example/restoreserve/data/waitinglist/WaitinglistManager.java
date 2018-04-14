@@ -15,7 +15,6 @@ import rx.Subscriber;
 import rx.subjects.PublishSubject;
 
 /**
- * Created by naderbaltaji on 12/5/17.
  */
 
 public class WaitinglistManager {
@@ -94,7 +93,6 @@ public class WaitinglistManager {
     }
 
     /**
-     * Class managing the storage of trellis session data.
      */
     private static class Cache extends SharedPreferencesCache {
         private final String PREF_NAME = "waitinglist_manager";

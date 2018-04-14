@@ -18,8 +18,6 @@ import rx.Single;
 
 
 /**
- * Created by naderbaltaji on 10/4/2017.
- *
  * <p>
  *     Class providing authentication logic, like
  *     login and registration.

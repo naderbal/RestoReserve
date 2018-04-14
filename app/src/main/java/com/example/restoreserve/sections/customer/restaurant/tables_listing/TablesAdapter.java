@@ -14,7 +14,6 @@ import com.example.restoreserve.data.reservations.model.ReservedTable;
 import java.util.ArrayList;
 
 /**
- * Created by naderbaltaji on 7/20/17.
  */
 
 public class TablesAdapter extends RecyclerView.Adapter<TablesAdapter.TableViewHolder> {

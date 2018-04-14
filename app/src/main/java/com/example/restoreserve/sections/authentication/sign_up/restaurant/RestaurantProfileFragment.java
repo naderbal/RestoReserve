@@ -43,7 +43,6 @@ import static android.app.Activity.RESULT_OK;
 
 
 /**
- * Created by naderbaltaji on 12/23/17.
  * <p>
  *
  * </p>
