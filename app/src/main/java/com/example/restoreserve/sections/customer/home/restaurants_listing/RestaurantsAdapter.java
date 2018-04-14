@@ -1,4 +1,4 @@
-package com.example.restoreserve.sections.customer.home;
+package com.example.restoreserve.sections.customer.home.restaurants_listing;
 
 import android.content.Context;
 import android.support.v7.util.SortedList;

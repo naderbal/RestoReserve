@@ -13,12 +13,26 @@ import java.io.Serializable;
  */
 public class Event implements Serializable{
     private String id;
+    private String restoId;
+    private String restoName;
     private String eventMessage;
+
+    public Event(String restoId, String restoName, String eventMessage) {
+        this.restoId = restoId;
+        this.restoName = restoName;
+        this.eventMessage = eventMessage;
+    }
 
     public Event(DocumentSnapshot snapshot) {
         id = snapshot.getId();
         if (snapshot.contains(StorageKeys.EVENT_MESSAGE)) {
             eventMessage = snapshot.getString(StorageKeys.EVENT_MESSAGE);
+        }
+        if (snapshot.contains(StorageKeys.RESTO_ID)) {
+            restoId = snapshot.getString(StorageKeys.RESTO_ID);
+        }
+        if (snapshot.contains(StorageKeys.RESTO_NAME)) {
+            restoName = snapshot.getString(StorageKeys.RESTO_NAME);
         }
     }
 
@@ -35,6 +49,14 @@ public class Event implements Serializable{
         }
     }
 
+    public String getRestoId() {
+        return restoId;
+    }
+
+    public String getRestoName() {
+        return restoName;
+    }
+
     public String getId() {
         return id;
     }
@@ -48,6 +70,8 @@ public class Event implements Serializable{
         try {
             jsonObject.put(StorageKeys.ID, id);
             jsonObject.put(StorageKeys.EVENT_MESSAGE, eventMessage);
+            jsonObject.put(StorageKeys.RESTO_ID, restoId);
+            jsonObject.put(StorageKeys.RESTO_NAME, restoName);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -1,4 +1,4 @@
-package com.example.restoreserve.sections.restaurant.events;
+package com.example.restoreserve.sections.customer.home.restaurants_listing;
 
 import android.content.Context;
 import android.support.v7.util.SortedList;
@@ -10,19 +10,18 @@ import android.widget.TextView;
 
 import com.example.restoreserve.R;
 import com.example.restoreserve.data.event.Event;
-import com.example.restoreserve.data.reservations.model.Reservation;
 
 import java.util.ArrayList;
 
 /**
  *
  */
-public class RestaurantEventsAdapter extends RecyclerView.Adapter<RestaurantEventsAdapter.EventViewHolder> {
+public class CustomerEventsAdapter extends RecyclerView.Adapter<CustomerEventsAdapter.EventViewHolder> {
     private Context mContext;
     private SortedList<Event> events;
     private OnEventListener listener;
 
-    public RestaurantEventsAdapter(Context mContext, OnEventListener listener) {
+    public CustomerEventsAdapter(Context mContext, OnEventListener listener) {
         this.mContext = mContext;
         this.listener = listener;
         events = new SortedList<>(Event.class, new SortedList.Callback<Event>() {
@@ -32,9 +31,7 @@ public class RestaurantEventsAdapter extends RecyclerView.Adapter<RestaurantEven
             }
 
             @Override
-            public void onChanged(int position, int count) {
-
-            }
+            public void onChanged(int position, int count) {}
 
             @Override
             public boolean areContentsTheSame(Event oldItem, Event newItem) {
@@ -47,9 +44,7 @@ public class RestaurantEventsAdapter extends RecyclerView.Adapter<RestaurantEven
             }
 
             @Override
-            public void onInserted(int position, int count) {
-
-            }
+            public void onInserted(int position, int count) {}
 
             @Override
             public void onRemoved(int position, int count) {
@@ -65,7 +60,7 @@ public class RestaurantEventsAdapter extends RecyclerView.Adapter<RestaurantEven
 
     @Override
     public EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_restaurant_event, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_customer_event, parent, false);
         // create and return view holder
         return new EventViewHolder(view);
     }
@@ -89,7 +84,6 @@ public class RestaurantEventsAdapter extends RecyclerView.Adapter<RestaurantEven
     public void removeEvent(Event event) {
         if (event != null) {
             events.remove(event);
-            notifyDataSetChanged();
         }
     }
 
@@ -104,14 +98,17 @@ public class RestaurantEventsAdapter extends RecyclerView.Adapter<RestaurantEven
     }
 
     public class EventViewHolder extends RecyclerView.ViewHolder{
-        TextView tvEventMessage;
+        TextView tvRestaurant, tvEventMessage;
+
         public EventViewHolder(View itemView) {
             super(itemView);
+            tvRestaurant = itemView.findViewById(R.id.tvRestaurant);
             tvEventMessage = itemView.findViewById(R.id.tvEventMessage);
         }
 
         public void bind(Event event) {
             tvEventMessage.setText(event.getEventMessage());
+            tvRestaurant.setText(event.getRestoName());
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onEventClicked(event);

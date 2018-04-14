@@ -62,6 +62,7 @@ public class RestaurantEventsFragment extends BaseFragment {
             @Override
             public void onAddEventSuccesfull() {
                 getEvents();
+                dialogFragment.dismiss();
             }
         });
         dialogFragment.show(getActivity().getFragmentManager(), "");
@@ -72,12 +73,32 @@ public class RestaurantEventsFragment extends BaseFragment {
 
             @Override
             public void onEventClicked(Event event) {
-
+                showAlert("Do you want to delete this event?", () -> deleteEvent(event));
             }
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvContent.setLayoutManager(linearLayoutManager);
         rvContent.setAdapter(adapter);
+    }
+
+    private void deleteEvent(Event event) {
+        showProgressDialog("");
+        EventsProvider.rxDeleteEvent(event.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleSubscriber<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        dismissProgressDialog();
+                        adapter.removeEvent(event);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        dismissProgressDialog();
+                        showToast("Something went wrong");
+                    }
+                });
     }
 
     public void getEvents() {

@@ -23,7 +23,6 @@ public class EventsProvider {
 
     public static Single<ArrayList<Event>> rxGetRestaurantEvents(String restoId) {
         final FirebaseFirestore instance = FirestoreManager.getInstance().getFirestoreInstance();
-
         return Single.create(singleSubscriber -> {
             instance
                     .collection(StorageKeys.EVENTS)
@@ -47,15 +46,60 @@ public class EventsProvider {
         });
     }
 
-    public static Single<Boolean> rxAddEvent(String restoId, String eventMessage) {
+  public static Single<ArrayList<Event>> rxGetEvents() {
+        final FirebaseFirestore instance = FirestoreManager.getInstance().getFirestoreInstance();
+        return Single.create(singleSubscriber -> {
+            instance
+                    .collection(StorageKeys.EVENTS)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        // check if profile set
+                        if (task.isSuccessful()) {
+                            try {
+                                ArrayList<Event> events = generateItemsList(task.getResult());
+                                singleSubscriber.onSuccess(events);
+                            } catch (Exception e) {
+                                singleSubscriber.onError(new Exception());
+                            }
+                        } else {
+                            // broadcast error
+                            Exception exception = task.getException();
+                            singleSubscriber.onError(exception);
+                        }
+                    });
+        });
+    }
+
+    public static Single<Boolean> rxAddEvent(Event event) {
         final FirebaseFirestore instance = FirestoreManager.getInstance().getFirestoreInstance();
         HashMap<String, Object> map = new HashMap<>();
-        map.put(StorageKeys.RESTO_ID, restoId);
-        map.put(StorageKeys.EVENT_MESSAGE, eventMessage);
+        map.put(StorageKeys.RESTO_ID, event.getRestoId());
+        map.put(StorageKeys.RESTO_NAME, event.getRestoName());
+        map.put(StorageKeys.EVENT_MESSAGE, event.getEventMessage());
         return Single.create(singleSubscriber -> {
             instance
                     .collection(StorageKeys.EVENTS)
                     .add(map)
+                    .addOnCompleteListener(task -> {
+                        // check if profile set
+                        if (task.isSuccessful()) {
+                            singleSubscriber.onSuccess(true);
+                        } else {
+                            // broadcast error
+                            Exception exception = task.getException();
+                            singleSubscriber.onError(exception);
+                        }
+                    });
+        });
+    }
+
+    public static Single<Boolean> rxDeleteEvent(String eventId) {
+        final FirebaseFirestore instance = FirestoreManager.getInstance().getFirestoreInstance();
+        return Single.create(singleSubscriber -> {
+            instance
+                    .collection(StorageKeys.EVENTS)
+                    .document(eventId)
+                    .delete()
                     .addOnCompleteListener(task -> {
                         // check if profile set
                         if (task.isSuccessful()) {

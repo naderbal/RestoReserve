@@ -23,6 +23,7 @@ import com.example.restoreserve.data.user.User;
 import com.example.restoreserve.data.waitinglist.WaitinglistManager;
 import com.example.restoreserve.data.waitinglist.WaitinglistProvider;
 import com.example.restoreserve.data.waitinglist.Waitinglist;
+import com.example.restoreserve.sections.customer.home.restaurants_listing.RestaurantsListingFragment;
 import com.example.restoreserve.sections.customer.home.settings.SettingsFragment;
 import com.example.restoreserve.sections.customer.reservations.ReservationsFragment;
 import com.example.restoreserve.sections.customer.waitinglist.WaitinglistFragment;

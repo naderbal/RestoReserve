@@ -66,14 +66,15 @@ public class EventDialogFragment extends DialogFragment {
     }
 
     private void addEvent() {
-        final String event = etEvent.getText().toString().trim();
-        if (event.isEmpty()){
+        final String eventMessage = etEvent.getText().toString().trim();
+        if (eventMessage.isEmpty()){
             showToast("Event/offer can't be empty");
             return;
         }
         showProgressDialog("loading");
         Restaurant restaurant = AppSessionManager.getInstance().getRestaurant();
-        EventsProvider.rxAddEvent(restaurant.getId(), event)
+        Event event = new Event(restaurant.getId(), restaurant.getName(), eventMessage);
+        EventsProvider.rxAddEvent(event)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleSubscriber<Boolean>() {

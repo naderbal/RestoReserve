@@ -10,6 +10,7 @@ import com.example.restoreserve.data.restaurant.model.Restaurant;
 import com.example.restoreserve.data.user.User;
 import com.example.restoreserve.utils.InputValidationUtils;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -64,7 +65,7 @@ public class WelcomePresenter implements WelcomeContract.Presenter {
                     @Override
                     public void onError(Throwable error) {
                         view.hideLoading();
-                        if (error instanceof FirebaseAuthInvalidCredentialsException || error instanceof AppAuthenticationManager.AccountNotFoundException) {
+                        if (error instanceof FirebaseAuthInvalidUserException || error instanceof AppAuthenticationManager.AccountNotFoundException) {
                             view.showLoginWrongCredentials();
                         } else {
                             view.showLoginError();
@@ -88,7 +89,7 @@ public class WelcomePresenter implements WelcomeContract.Presenter {
                     @Override
                     public void onError(Throwable error) {
                         view.hideLoading();
-                        if (error instanceof FirebaseAuthInvalidCredentialsException || error instanceof AppAuthenticationManager.AccountNotFoundException) {
+                        if (error instanceof FirebaseAuthInvalidUserException || error instanceof AppAuthenticationManager.AccountNotFoundException) {
                             view.showLoginWrongCredentials();
                         } else {
                             view.showLoginError();
