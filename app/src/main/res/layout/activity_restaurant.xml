@@ -115,6 +115,7 @@
         <ImageView
             android:id="@+id/ivTables"
             android:layout_width="match_parent"
+            android:scaleType="fitXY"
             android:layout_height="200dp"
             android:layout_marginTop="@dimen/content_margin_large"
             android:layout_marginBottom="@dimen/content_margin_large"/>

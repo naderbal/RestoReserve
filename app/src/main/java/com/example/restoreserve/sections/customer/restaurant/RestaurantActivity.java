@@ -227,16 +227,23 @@ public class RestaurantActivity extends BaseActivity {
         final String date = vDate.getValue();
         final String time = vTime.getValue();
         final String tableId = table.getId();
-        final Date resDate = DateHelper.parseDate(date + " " + time, "dd-MM-yyyy hh:mm a");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.ENGLISH);
+        Date resDate = null;
+        try {
+            resDate = sdf.parse(date + " " + time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         final Calendar instance = Calendar.getInstance();
         instance.setTime(resDate);
-        instance.add(Calendar.HOUR, 1);
-
         final Date resTime = instance.getTime();
-        final Date currentDate = Calendar.getInstance().getTime();
+
+        final Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.add(Calendar.HOUR, 1);
+        Date currentDate = currentCalendar.getTime();
 
         boolean isConfirmed = false;
-        if (resTime.after(currentDate)) isConfirmed = true;
+        if (resTime.before(currentDate)) isConfirmed = true;
         // show loading
         showProgressDialog("Reserving table");
         Reservation reservation = new Reservation(restId, restName, userId, userName, userPhonenumber, date, time, tableId, isConfirmed);
@@ -322,7 +329,11 @@ public class RestaurantActivity extends BaseActivity {
                     // get formatted date from selected date
                     String formattedDate = apiFormat.format(selectedCalendar.getTime());
                     vDate.updateValue(formattedDate);
-                    submitDateOrTimePicked();
+                    try {
+                        submitDateOrTimePicked();
+                    } catch (ParseException ignored) {
+
+                    }
                 },
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
@@ -356,7 +367,11 @@ public class RestaurantActivity extends BaseActivity {
                 // get formatted date from selected date
                 String formattedTime = apiFormat.format(selectedCalendar.getTime());
                 vTime.updateValue(formattedTime);
+            try {
                 submitDateOrTimePicked();
+            } catch (ParseException ignored) {
+
+            }
         },false);
 
         Calendar currentDate = Calendar.getInstance();
@@ -424,7 +439,7 @@ public class RestaurantActivity extends BaseActivity {
         tpd.show(getFragmentManager(), "");
     }
 
-    private void submitDateOrTimePicked() {
+    private void submitDateOrTimePicked() throws ParseException {
         // remove previous query tables
         tablesAdapter.clearPreviousTables();
         // get date and time values
@@ -439,18 +454,19 @@ public class RestaurantActivity extends BaseActivity {
                     if (userReservation.getDate().equals(dateValue)) {
                         // parse reservation time to date
                         final String reservationTime = userReservation.getTime();
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
                         final Date timeReservationDate = DateHelper.parseTime(reservationTime);
                         // parse time to be reserved to date
-                        final Date timeToBeReservedDate = DateHelper.parseTime(timeValue);
+                        final Date timeToBeReservedDate = simpleDateFormat.parse(timeValue);
                         // parse 6 pm date
-                        final Date date6pm = DateHelper.parseTime("6:00 PM");
+                        final Date date6pm = simpleDateFormat.parse("6:00 PM");
                         // check time to be reserved less than 6:00 pm
                         if (timeToBeReservedDate!= null && timeToBeReservedDate.before(date6pm)) {
                             Calendar calendar = Calendar.getInstance();
                             calendar.setTime(timeToBeReservedDate);
                             calendar.add(Calendar.HOUR_OF_DAY, 3);
                             final Date timeToBeReservedAfter3Hours = calendar.getTime();
-                            if (timeToBeReservedAfter3Hours.after(timeReservationDate)) {
+                            if (timeToBeReservedAfter3Hours.before(timeReservationDate)) {
                                 showCantReserveUI();
                                 return;
                             }

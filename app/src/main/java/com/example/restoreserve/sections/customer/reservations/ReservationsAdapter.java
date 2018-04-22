@@ -13,9 +13,12 @@ import com.example.restoreserve.R;
 import com.example.restoreserve.data.reservations.model.Reservation;
 import com.example.restoreserve.utils.DateHelper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  *
@@ -126,7 +129,13 @@ public class ReservationsAdapter extends RecyclerView.Adapter<ReservationsAdapte
                 if (res.hasFeedback()) {
                     tvFeedback.setText("Feedback Submitted");
                 } else {
-                    final Date resDate = DateHelper.parseApiDate(res.getDate());
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.ENGLISH);
+                    Date resDate = null;
+                    try {
+                        resDate = sdf.parse(res.getDate() + " " + res.getTime());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     final Date currentDate = Calendar.getInstance().getTime();
                     if (currentDate.after(resDate)) {
                         tvFeedback.setText("Submit Feedback");

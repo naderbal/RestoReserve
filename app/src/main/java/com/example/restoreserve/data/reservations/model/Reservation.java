@@ -51,6 +51,7 @@ public class Reservation implements Serializable{
         this.date = reservation.date;
         this.time = reservation.time;
         this.tableId = reservation.tableId;
+        this.isConfirmed = reservation.isConfirmed;
     }
 
     public Reservation(DocumentSnapshot snapshot) {

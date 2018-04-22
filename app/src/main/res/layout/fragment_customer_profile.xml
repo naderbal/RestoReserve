@@ -19,6 +19,15 @@
             android:layout_marginEnd="@dimen/content_margin_normal"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:layout_marginTop="@dimen/content_margin_large"
+                tools:text="Customer Registration"/>
+
         <LinearLayout
             android:id="@+id/vCredentials"
             android:layout_width="match_parent"
@@ -101,7 +110,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords"
-                    android:hint="Name"/>
+                    android:hint="Username"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout

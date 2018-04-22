@@ -18,9 +18,12 @@ import com.example.restoreserve.data.reservations.ReservationsProvider;
 import com.example.restoreserve.data.reservations.model.Reservation;
 import com.example.restoreserve.utils.DateHelper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import rx.SingleSubscriber;
 import rx.Subscriber;
@@ -78,7 +81,13 @@ public class ReservationsFragment extends BaseFragment {
             public void onReservationClicked(Reservation reservation) {
                 if(reservation.isConfirmed()) {
                     if (!reservation.hasFeedback()) {
-                        final Date resDate = DateHelper.parseApiDate(reservation.getDate());
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.ENGLISH);
+                        Date resDate = null;
+                        try {
+                            resDate = sdf.parse(reservation.getDate() + " " + reservation.getTime());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         final Date currentDate = Calendar.getInstance().getTime();
                         if (currentDate.after(resDate)) {
                             openFeedbackDialog(reservation);

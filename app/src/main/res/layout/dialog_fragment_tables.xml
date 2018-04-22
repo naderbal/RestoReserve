@@ -39,11 +39,11 @@
 
             <EditText
                 android:id="@+id/etSeatsCount"
-                android:layout_width="120dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/content_margin_large"
                 android:inputType="number"
-                android:hint="Seats count"/>
+                android:hint="Number of seats"/>
         </LinearLayout>
 
         <Button

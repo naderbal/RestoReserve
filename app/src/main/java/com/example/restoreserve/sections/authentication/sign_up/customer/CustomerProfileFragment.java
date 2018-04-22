@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.restoreserve.R;
 import com.example.restoreserve.base.BaseFragment;
@@ -46,6 +47,7 @@ public class CustomerProfileFragment extends BaseFragment {
     private Button btnSignUp;
     // data
     boolean withCredentials = false;
+    TextView tvTitle;
 
     public CustomerProfileFragment() {
     }
@@ -94,11 +96,14 @@ public class CustomerProfileFragment extends BaseFragment {
         vScroll = view.findViewById(R.id.vScroll);
         // click listener
         btnSignUp.setOnClickListener(v -> handleSubmitClicked());
+        tvTitle = view.findViewById(R.id.tvTitle);
         // credentials
         if (withCredentials) {
             btnSignUp.setText("Sign Up");
+            tvTitle.setText("Customer Registration");
         } else {
             btnSignUp.setText("Update");
+            tvTitle.setText("Update");
             view.findViewById(R.id.vCredentials).setVisibility(View.GONE);
             setInputFields();
         }
@@ -158,34 +163,35 @@ public class CustomerProfileFragment extends BaseFragment {
     }
 
     private boolean inputFieldsValid(@NonNull User user) {
+        boolean valid = true;
         if (withCredentials) {
             // email
             boolean emailValid = InputValidationUtils.validateEmail(user.getEmail());
             if (!validateField(emailValid, tilEmail, "Invalid Email")) {
-                return false;
+                valid =  false;
             }
             // password
             boolean passwordValid = InputValidationUtils.validatePassword(user.getPassword());
             if (!validateField(passwordValid, tilPassword, "Invalid Password")) {
-                return false;
+                valid = false;
             }
             if (!getInputText(etPassword).equals(getInputText(etConfirmPassword))) {
                 tilConfirmPassword.setError("Passwords not matching");
                 vScroll.scrollTo(0, etConfirmPassword.getTop() - etConfirmPassword.getHeight() / 2);
-                return false;
+                valid = false;
             }
         }
         // name
         boolean nameValid = InputValidationUtils.validateName(user.getName());
-        if (!validateField(nameValid, tilName, "Invalid Name")) {
-            return false;
+        if (!validateField(nameValid, tilName, "Invalid username")) {
+            valid = false;
         }
         // phone
         boolean phoneValid = InputValidationUtils.validaPhone(user.getPhoneNumber());
         if (!validateField(phoneValid, tilPhone, "Invalid Phone")) {
-            return false;
+            valid = false;
         }
-        return true;
+        return valid;
     }
 
     private boolean validateField(boolean fieldValid, TextInputLayout et, String errorMessage) {

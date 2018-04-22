@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.restoreserve.R;
@@ -80,6 +81,7 @@ public class RestaurantProfileFragment extends BaseFragment {
     private Button btnPicUpload;
     private Button btnSignUp;
     String profilePicUrl;
+    TextView tvTitle;
     // data
     boolean withCredentials = false;
     ArrayList<Table> tables = new ArrayList<>();
@@ -138,6 +140,7 @@ public class RestaurantProfileFragment extends BaseFragment {
         vOpeningHour = view.findViewById(R.id.vOpeningHour);
         vClosingHour = view.findViewById(R.id.vClosingHour);
         vTables = view.findViewById(R.id.vTables);
+        tvTitle = view.findViewById(R.id.tvTitle);
         // listeners
         vOpeningHour.setOnClickListener(v -> {
             DialogFragmentTimePicker timeFragment = new DialogFragmentTimePicker();
@@ -203,8 +206,10 @@ public class RestaurantProfileFragment extends BaseFragment {
         // credentials
         if (withCredentials) {
             btnSignUp.setText("Sign Up");
+            tvTitle.setText("Restaurant Registration");
         } else {
             btnSignUp.setText("Update");
+            tvTitle.setText("Update");
             view.findViewById(R.id.vCredentials).setVisibility(View.GONE);
             setInputFields();
         }
@@ -346,6 +351,7 @@ public class RestaurantProfileFragment extends BaseFragment {
         restaurant.setWebsite(website);
         restaurant.setOpeningHour(openingHour);
         restaurant.setClosingHour(closingHour);
+        if  (delay.isEmpty()) delay = "0";
         restaurant.setConfirmationDelayMins(Integer.parseInt(delay));
         restaurant.setTables(tables);
         restaurant.setTablesPicUrl(profilePicUrl);
@@ -362,32 +368,33 @@ public class RestaurantProfileFragment extends BaseFragment {
     }
 
     private boolean inputFieldsValid(@NonNull Restaurant restaurant, String password) {
+        boolean valid = true;
         if (withCredentials) {
             // email
             boolean emailValid = InputValidationUtils.validateEmail(restaurant.getEmail());
             if (!validateField(emailValid, tilEmail, "Invalid Email")) {
-                return false;
+                valid = false;
             }
             // password
             boolean passwordValid = InputValidationUtils.validatePassword(password);
             if (!validateField(passwordValid, tilPassword, "Invalid Password")) {
-                return false;
+                valid = false;
             }
             if (!getInputText(etPassword).equals(getInputText(etConfirmPassword))) {
                 tilConfirmPassword.setError("Passwords not matching");
                 vScroll.scrollTo(0, etConfirmPassword.getTop() - etConfirmPassword.getHeight() / 2);
-                return false;
+                valid = false;
             }
         }
         // name
         boolean nameValid = InputValidationUtils.validateName(restaurant.getName());
         if (!validateField(nameValid, tilName, "Invalid Name")) {
-            return false;
+            valid = false;
         }
         // phone
         boolean phoneValid = InputValidationUtils.validaPhone(restaurant.getPhoneNumber());
         if (!validateField(phoneValid, tilPhone, "Invalid Phone")) {
-            return false;
+            valid = false;
         }
         if (!InputValidationUtils.validateInputSelector(restaurant.getOpeningHour())) {
             showToast("Please set opening hour");
@@ -397,20 +404,19 @@ public class RestaurantProfileFragment extends BaseFragment {
             showToast("Please set closing hour");
             return false;
         }
-        if (restaurant.getWebsite().length() != 0 && !InputValidationUtils.validateWebsite(restaurant.getWebsite())) {
-            showToast("Please enter a valid website");
-            return false;
+        final boolean websiteValid = restaurant.getWebsite().length() != 0 && !InputValidationUtils.validateWebsite(restaurant.getWebsite());
+        if (!validateField(websiteValid, tilWebsite, "Invalid Website")) {
+            valid = false;
         }
         if (restaurant.getTables() == null) {
             showToast("Please set tables");
             return false;
         }
-        if (restaurant.getConfirmationDelayMins() == 0) {
-            showToast("Please set confirmation delay time");
+        final boolean minutes = restaurant.getConfirmationDelayMins() == 0;
+        if (!validateField(minutes, tilConfirmationDelay, "Please set delay time")) {
             return false;
         }
-
-        return true;
+        return valid;
     }
 
     private boolean validateField(boolean fieldValid, TextInputLayout et, String errorMessage) {
