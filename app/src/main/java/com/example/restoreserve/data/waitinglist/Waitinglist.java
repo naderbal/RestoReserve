@@ -17,6 +17,7 @@ public class Waitinglist {
     private String restoName;
     private String date;
     private String time;
+    private boolean available;
 
     public Waitinglist(String customerId, String restoId, String restoName, String date, String time) {
         this.customerId = customerId;
@@ -79,7 +80,6 @@ public class Waitinglist {
         }
     }
 
-
     public JSONObject toJSON() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -117,5 +117,13 @@ public class Waitinglist {
 
     public String getTime() {
         return time;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public boolean isAvailable() {
+        return available;
     }
 }

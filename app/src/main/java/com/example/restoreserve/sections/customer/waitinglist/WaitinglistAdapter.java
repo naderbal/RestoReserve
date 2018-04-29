@@ -96,15 +96,25 @@ public class WaitinglistAdapter extends RecyclerView.Adapter<WaitinglistAdapter.
         return waitlists;
     }
 
+    public void updateWaitingList(Waitinglist waitinglist) {
+        for (int i = 0; i < waitlists.size(); i++) {
+            if (waitlists.get(i).getId().equals(waitinglist.getId())) {
+                waitlists.updateItemAt(i, waitinglist);
+                notifyDataSetChanged();
+            }
+        }
+    }
+
     public class TableViewHolder extends RecyclerView.ViewHolder{
 
-        TextView tvRestaurant, tvDate, tvTime;
+        TextView tvRestaurant, tvDate, tvTime, tvAvailable;
         View vContainer;
 
         public TableViewHolder(View itemView) {
             super(itemView);
             vContainer = itemView.findViewById(R.id.vContainer);
             tvRestaurant = itemView.findViewById(R.id.tvRestaurant);
+            tvAvailable = itemView.findViewById(R.id.tvAvailable);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvTime = itemView.findViewById(R.id.tvTime);
         }
@@ -113,15 +123,23 @@ public class WaitinglistAdapter extends RecyclerView.Adapter<WaitinglistAdapter.
             tvRestaurant.setText(waitinglist.getRestoName());
             tvDate.setText(waitinglist.getDate());
             tvTime.setText(waitinglist.getTime());
+            boolean clickable = false;
+            if (waitinglist.isAvailable()) {
+                tvAvailable.setVisibility(View.VISIBLE);
+                clickable = true;
+            } else {
+                tvAvailable.setVisibility(View.INVISIBLE);
+            }
+            boolean available = clickable;
             vContainer.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onWaitinglistClicked(waitinglist);
+                    listener.onWaitinglistClicked(waitinglist, available);
                 }
             });
         }
     }
 
     public interface OnWaitingListener {
-        void onWaitinglistClicked(Waitinglist waitinglist);
+        void onWaitinglistClicked(Waitinglist waitinglist, boolean clickable);
     }
 }

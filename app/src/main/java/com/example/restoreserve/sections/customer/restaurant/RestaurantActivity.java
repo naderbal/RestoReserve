@@ -420,16 +420,20 @@ public class RestaurantActivity extends BaseActivity {
                 } else {
                     // min time
                     Date minDate = apiFormat.parse(openingHour);
-                    cal.setTime(minDate);
-                    Timepoint minTime = new Timepoint(cal.get(Calendar.HOUR_OF_DAY));
+                    Date maxDate = apiFormat.parse(closingHour);
+                    Timepoint minTime;
+                    Timepoint maxTime;
+                    if (minDate.before(maxDate)) {
+                        cal.setTime(minDate);
+                        minTime = new Timepoint(cal.get(Calendar.HOUR_OF_DAY));
 
-                    // max time
-                    final Date maxDate = apiFormat.parse(closingHour);
-                    cal.setTime(maxDate);
-                    Timepoint maxTime = new Timepoint(cal.get(Calendar.HOUR_OF_DAY));
-                    // add min and  max time restriction to time picker
-                    tpd.setMinTime(minTime);
-                    tpd.setMaxTime(maxTime);
+                        // max time
+                        cal.setTime(maxDate);
+                        maxTime = new Timepoint(cal.get(Calendar.HOUR_OF_DAY));
+                        // add min and  max time restriction to time picker
+                        tpd.setMinTime(minTime);
+                        tpd.setMaxTime(maxTime);
+                    }
                 }
             }
             tpd.setTimeInterval(1, 30);

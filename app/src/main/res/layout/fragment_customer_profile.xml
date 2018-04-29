@@ -136,6 +136,7 @@
                 android:layout_marginBottom="@dimen/content_margin_normal"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:textColor="@color/white"
+                android:backgroundTint="@color/colorAccent"
                 android:text="Sign Up"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
