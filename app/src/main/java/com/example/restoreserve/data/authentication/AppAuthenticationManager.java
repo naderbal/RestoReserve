@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.example.restoreserve.data.FirestoreManager;
+import com.example.restoreserve.data.StorageKeys;
 import com.example.restoreserve.data.restaurant.model.Restaurant;
 import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.data.user.User;
@@ -14,6 +15,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
 
 import rx.Single;
 
@@ -275,10 +278,12 @@ public class AppAuthenticationManager {
     private static Single<Restaurant> rxStoreRestaurant(String id, Restaurant restaurant) {
         return Single.create(singleSubscriber -> {
             // Initialize Firestore
+            final HashMap<String, Object> map = restaurant.toMap(id);
+            map.put(StorageKeys.IS_APPROVED, false);
             FirebaseFirestore.getInstance()
                     .collection("restaurants")
                     .document(id)
-                    .set(restaurant.toMap(id))
+                    .set(map)
                     .addOnCompleteListener(task -> {
                         // check if profile set
                         if (task.isSuccessful()) {

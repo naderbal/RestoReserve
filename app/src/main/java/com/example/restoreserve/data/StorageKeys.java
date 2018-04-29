@@ -43,4 +43,5 @@ public class StorageKeys {
     public static final String EVENTS = "events";
     public static final String RESTAURANT_ID = "restaurant_id";
     public static final String EVENT_MESSAGE = "event_message";
+    public static final String IS_APPROVED = "is_approved";
 }

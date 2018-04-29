@@ -27,6 +27,7 @@ public class Restaurant implements Serializable {
     private int tablesCount;
     private int confirmationDelayMins;
     private ArrayList<Table> tables;
+    private boolean isApproved;
 
     public Restaurant(String name,
                       String phoneNumber,
@@ -88,6 +89,9 @@ public class Restaurant implements Serializable {
         }
         if (document.contains(StorageKeys.CONFIRMATION_DELAY_MINS)) {
             this.confirmationDelayMins = document.getDouble(StorageKeys.CONFIRMATION_DELAY_MINS).intValue();
+        }
+        if (document.contains(StorageKeys.IS_APPROVED)) {
+            this.isApproved = document.getBoolean(StorageKeys.IS_APPROVED);
         }
         if (document.contains(StorageKeys.TABLES)) {
             final ArrayList<HashMap<String, Object>> tab = (ArrayList<HashMap<String, Object>>) document.getData().get(StorageKeys.TABLES);
@@ -203,6 +207,10 @@ public class Restaurant implements Serializable {
 
     public void setConfirmationDelayMins(int confirmationDelayMins) {
         this.confirmationDelayMins = confirmationDelayMins;
+    }
+
+    public boolean isApproved() {
+        return isApproved;
     }
 
     public int getConfirmationDelayMins() {
