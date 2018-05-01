@@ -116,8 +116,8 @@ public class TablesDialogFragment extends DialogFragment {
         if (count == 0) {
             Toast.makeText(getContext(), "Please enter seats count", Toast.LENGTH_SHORT).show();
             return;
-        } else if (count > 10) {
-            Toast.makeText(getContext(), "Seats count shouldn't exceed 10", Toast.LENGTH_SHORT).show();
+        } else if (count > 14) {
+            Toast.makeText(getContext(), "Seats count shouldn't exceed 14", Toast.LENGTH_SHORT).show();
             return;
         }
         Table table = new Table(tableName, count);
