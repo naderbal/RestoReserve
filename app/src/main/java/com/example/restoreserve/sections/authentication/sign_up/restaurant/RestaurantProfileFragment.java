@@ -404,7 +404,8 @@ public class RestaurantProfileFragment extends BaseFragment {
             showToast("Please set closing hour");
             return false;
         }
-        final boolean websiteValid = restaurant.getWebsite().length() != 0 && !InputValidationUtils.validateWebsite(restaurant.getWebsite());
+        final String website = restaurant.getWebsite();
+        final boolean websiteValid = (website.length() == 0 || InputValidationUtils.validateWebsite(website));
         if (!validateField(websiteValid, tilWebsite, "Invalid Website")) {
             valid = false;
         }
@@ -412,7 +413,7 @@ public class RestaurantProfileFragment extends BaseFragment {
             showToast("Please set tables");
             return false;
         }
-        final boolean minutes = restaurant.getConfirmationDelayMins() == 0;
+        final boolean minutes = restaurant.getConfirmationDelayMins() != 0;
         if (!validateField(minutes, tilConfirmationDelay, "Please set delay time")) {
             return false;
         }
