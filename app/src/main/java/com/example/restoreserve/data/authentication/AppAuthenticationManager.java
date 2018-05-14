@@ -89,7 +89,7 @@ public class AppAuthenticationManager {
     }
 
     public static Single<User> rxUpdateUser(String id, User updatedUser) {
-        return rxFirebaseCheckUserCredentials(id, updatedUser.getPhoneNumber(), updatedUser.getName())
+        return rxFirebaseUpdateCheckUserCredentials(id, updatedUser.getPhoneNumber(), updatedUser.getName())
                 .flatMap(aBoolean ->  {
                     if (aBoolean) {
                         return Single.create(singleSubscriber -> {
@@ -116,7 +116,7 @@ public class AppAuthenticationManager {
     }
 
     public static Single<Restaurant> rxUpdateRestaurant(String id, Restaurant updatedRestaurant) {
-        return rxFirebaseCheckRestaurantCredentials(id, updatedRestaurant.getPhoneNumber(), updatedRestaurant.getName())
+        return rxFirebaseUpdateCheckRestaurantCredentials(id, updatedRestaurant.getPhoneNumber(), updatedRestaurant.getName())
                 .flatMap(aBoolean -> {
                     if (aBoolean) {
                         return Single.create(singleSubscriber -> {
@@ -191,11 +191,46 @@ public class AppAuthenticationManager {
                                 for (DocumentSnapshot snapshot: iterable) {
                                     // generate user
                                     User user = new User(snapshot.getId(), snapshot);
-                                    if ((id !=null && !id.equals(user.getId())) && user.getPhoneNumber().equals(phoneNumber)) {
+                                    if (user.getPhoneNumber().equals(phoneNumber)) {
                                         singleSubscriber.onError(new PhoneNumberAlreadyExistsException());
                                         return;
                                     }
                                     if ((id !=null && !id.equals(user.getId())) && user.getName().equals(name)) {
+                                        singleSubscriber.onError(new NameAlreadyExistsException());
+                                        return;
+                                    }
+                                }
+                                singleSubscriber.onSuccess(true);
+                            } else {
+                                singleSubscriber.onSuccess(false);
+                            }
+                        })
+        );
+    }
+
+    /**
+     * Returns a {@link Single} that will execute a {@link FirebaseAuth} registration
+     * request. Upon success, it will emit the registered {@link FirebaseUser} uid.
+     */
+    private static Single<Boolean> rxFirebaseUpdateCheckUserCredentials(@NonNull String id, @NonNull String phoneNumber, String name) {
+        return Single.create(singleSubscriber ->
+                // trigger Firebase registration request
+                FirestoreManager.getInstance()
+                        .getFirestoreInstance()
+                        .collection("users")
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            // check if resulting task was successful
+                            if (task.isSuccessful()) {
+                                Iterable<DocumentSnapshot> iterable = task.getResult().getDocuments();
+                                for (DocumentSnapshot snapshot: iterable) {
+                                    // generate user
+                                    User user = new User(snapshot.getId(), snapshot);
+                                    if (!id.equals(user.getId()) && user.getPhoneNumber().equals(phoneNumber)) {
+                                        singleSubscriber.onError(new PhoneNumberAlreadyExistsException());
+                                        return;
+                                    }
+                                    if (!id.equals(user.getId()) && user.getName().equals(name)) {
                                         singleSubscriber.onError(new NameAlreadyExistsException());
                                         return;
                                     }
@@ -233,6 +268,43 @@ public class AppAuthenticationManager {
                                         return;
                                     }
                                     if ((id != null && !id.equals(restaurant.getId())) && name1 != null && name1.equals(name)) {
+                                        singleSubscriber.onError(new NameAlreadyExistsException());
+                                        return;
+                                    }
+                                }
+                                singleSubscriber.onSuccess(true);
+                            } else {
+                                singleSubscriber.onSuccess(false);
+                            }
+                        })
+        );
+    }
+
+    /**
+     * Returns a {@link Single} that will execute a {@link FirebaseAuth} registration
+     * request. Upon success, it will emit the registered {@link FirebaseUser} uid.
+     */
+    private static Single<Boolean> rxFirebaseUpdateCheckRestaurantCredentials(@NonNull String id, @NonNull String phoneNumber, String name) {
+        return Single.create(singleSubscriber ->
+                // trigger Firebase registration request
+                FirestoreManager.getInstance()
+                        .getFirestoreInstance()
+                        .collection("restaurants")
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            // check if resulting task was successful
+                            if (task.isSuccessful()) {
+                                Iterable<DocumentSnapshot> iterable = task.getResult().getDocuments();
+                                for (DocumentSnapshot snapshot: iterable) {
+                                    // generate user
+                                    Restaurant restaurant = new Restaurant(snapshot);
+                                    final String phoneNumber1 = restaurant.getPhoneNumber();
+                                    final String name1 = restaurant.getName();
+                                    if (!id.equals(restaurant.getId()) && phoneNumber1 !=null && phoneNumber1.equals(phoneNumber)) {
+                                        singleSubscriber.onError(new PhoneNumberAlreadyExistsException());
+                                        return;
+                                    }
+                                    if (!id.equals(restaurant.getId()) && name1 != null && name1.equals(name)) {
                                         singleSubscriber.onError(new NameAlreadyExistsException());
                                         return;
                                     }

@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Top Table</string>
     <string name="loading">loading</string>
+    <string name="about_us">Top Table System is a convenient self-service table booking system that can be embedded on any mobile. With the restaurant reservation system, you can customize the booking process, enable people to book a table through the application,
+        manage restaurant availability, and reservations\n\nThrough our website, www.toptable.com and our mobile application, restaurants grow and run their businesses,
+        to enabling diners to discover and book the perfect table every time they dine, our story is one of connection among diners and restaurants.
+        Visitors to our application find the most comprehensive restaurant guide for their area.</string>
 </resources>

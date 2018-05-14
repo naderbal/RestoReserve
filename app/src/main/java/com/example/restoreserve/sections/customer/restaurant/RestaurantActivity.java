@@ -466,11 +466,16 @@ public class RestaurantActivity extends BaseActivity {
                         final Date date6pm = simpleDateFormat.parse("6:00 PM");
                         // check time to be reserved less than 6:00 pm
                         if (timeToBeReservedDate!= null && timeToBeReservedDate.before(date6pm)) {
+                            // time reservation after 3 hours
                             Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(timeToBeReservedDate);
+                            calendar.setTime(timeReservationDate);
                             calendar.add(Calendar.HOUR_OF_DAY, 3);
-                            final Date timeToBeReservedAfter3Hours = calendar.getTime();
-                            if (timeToBeReservedAfter3Hours.before(timeReservationDate)) {
+                            final Date timeReservedAfter3Hours = calendar.getTime();
+                            // time reservation before 3 hours
+                            calendar.setTime(timeReservationDate);
+                            calendar.add(Calendar.HOUR_OF_DAY, -3);
+                            final Date timeReservedBefore3Hours = calendar.getTime();
+                            if (timeToBeReservedDate.after(timeReservedBefore3Hours) && timeToBeReservedDate.before(timeReservedAfter3Hours)) {
                                 showCantReserveUI();
                                 return;
                             }
@@ -566,11 +571,16 @@ public class RestaurantActivity extends BaseActivity {
                         final Date date6pm = DateHelper.parseTime("6:00 PM");
                         // check time to be reserved less than 6:00 pm
                         if (timeToBeReservedDate!= null && timeToBeReservedDate.before(date6pm)) {
+                            // time reservation after 3 hours
                             Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(timeToBeReservedDate);
+                            calendar.setTime(timeReservationDate);
                             calendar.add(Calendar.HOUR_OF_DAY, 3);
-                            final Date timeToBeReservedAfter3Hours = calendar.getTime();
-                            if (timeToBeReservedAfter3Hours.after(timeReservationDate)) {
+                            final Date timeReservedAfter3Hours = calendar.getTime();
+                            // time reservation before 3 hours
+                            calendar.setTime(timeReservationDate);
+                            calendar.add(Calendar.HOUR_OF_DAY, -3);
+                            final Date timeReservedBefore3Hours = calendar.getTime();
+                            if (timeToBeReservedDate.after(timeReservedBefore3Hours) && timeToBeReservedDate.before(timeReservedAfter3Hours)) {
                                 reservedTable.setReserved();
                                 reservedTable.setReservedTime(reservationTime);
                             } else {
