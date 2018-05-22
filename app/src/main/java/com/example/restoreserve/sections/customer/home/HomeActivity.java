@@ -151,7 +151,7 @@ public class HomeActivity extends AppCompatActivity {
                     .subscribe(new SingleSubscriber<ArrayList<Reservation>>() {
                         @Override
                         public void onSuccess(ArrayList<Reservation> reservations) {
-                            ReservationsManager.getInstance().addReservations(handleReservations(reservations));
+                            ReservationsManager.getInstance().addReservations(reservations);
                         }
 
                         @Override

@@ -94,6 +94,8 @@ public class SignUpActivity extends BaseActivity {
                 dismissProgressDialog();
                 if (error instanceof AppAuthenticationManager.PhoneNumberAlreadyExistsException) {
                     showToast("Restaurant with this phone number already exists");
+                } else if (error instanceof FirebaseAuthInvalidCredentialsException) {
+                    showToast("Email address already used, please choose another email");
                 } else {
                     Toast.makeText(getBaseContext(), "Registration Failed", Toast.LENGTH_SHORT).show();
                 }

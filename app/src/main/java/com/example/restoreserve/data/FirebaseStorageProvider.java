@@ -21,7 +21,8 @@ public class FirebaseStorageProvider {
     public static UploadTask uploadPicture(Context context, Bitmap bitmap) {
         // get a reference to store file at folder photos/filename
         String timestamp = String.valueOf(System.currentTimeMillis());
-        final StorageReference photoRef = FirebaseStorage.getInstance().getReference()
+        final StorageReference photoRef = FirebaseStorage.getInstance("gs://restoreserve-8ad01.appspot.com")
+                .getReference()
                 .child("images")
                 .child(timestamp);
         // get byte array instance

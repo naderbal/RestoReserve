@@ -157,8 +157,8 @@ public class RestaurantsListingFragment extends BaseFragment {
                     @Override
                     public void onSuccess(ArrayList<Restaurant> ferchedRestaurants) {
                         vSwipe.setRefreshing(false);
-                        restaurants = ferchedRestaurants;
-                        restaurantsAdapter.addRestaurants(ferchedRestaurants);
+                        restaurants = getApprovedRestaurants(ferchedRestaurants);
+                        restaurantsAdapter.addRestaurants(restaurants);
                     }
 
                     @Override
@@ -166,6 +166,14 @@ public class RestaurantsListingFragment extends BaseFragment {
                         vSwipe.setRefreshing(false);
                     }
                 });
+    }
+
+    private ArrayList<Restaurant> getApprovedRestaurants(ArrayList<Restaurant> ferchedRestaurants) {
+        ArrayList<Restaurant> approvedRestaurants = new ArrayList<>();
+        for (Restaurant ferchedRestaurant : ferchedRestaurants) {
+            if (ferchedRestaurant.isApproved()) approvedRestaurants.add(ferchedRestaurant);
+        }
+        return approvedRestaurants;
     }
 
     public void fetchEvents() {

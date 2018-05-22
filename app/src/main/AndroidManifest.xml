@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.restoreserve">
 
     <application
@@ -11,6 +12,11 @@
         android:screenOrientation="portrait"
         android:name=".RestoReserve"
         android:theme="@style/AppTheme">
+        <meta-data
+            tools:replace="android:value"
+            android:name="android.support.VERSION"
+            android:value="26.1.0" />
+
         <activity
             android:name=".sections.splash.SplashActivity"
             android:screenOrientation="portrait">

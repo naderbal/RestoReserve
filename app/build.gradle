@@ -23,8 +23,8 @@ android {
 }
 ext {
     supportVersion = '26.0.1'
-    playServicesVersion = '11.0.2'
-    firebaseVersion = '11.6.2'
+    playServicesVersion = '12.0.1'
+    firebaseVersion = '12.0.1'
 }
 
 dependencies {

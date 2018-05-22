@@ -139,6 +139,7 @@ public class ReservationsAdapter extends RecyclerView.Adapter<ReservationsAdapte
                     final Date currentDate = Calendar.getInstance().getTime();
                     if (currentDate.after(resDate)) {
                         tvFeedback.setText("Submit Feedback");
+                        vContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
                     } else {
                         tvFeedback.setVisibility(View.GONE);
                     }
