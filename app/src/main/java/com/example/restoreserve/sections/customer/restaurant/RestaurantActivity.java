@@ -239,7 +239,8 @@ public class RestaurantActivity extends BaseActivity {
         final Date resTime = instance.getTime();
 
         final Calendar currentCalendar = Calendar.getInstance();
-        currentCalendar.add(Calendar.HOUR, 1);
+        int delayTime = restaurant.getConfirmationDelayMins();
+        currentCalendar.add(Calendar.MINUTE, delayTime);
         Date currentDate = currentCalendar.getTime();
 
         boolean isConfirmed = false;
@@ -314,6 +315,7 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     private void openDate() {
+        vTime.updateValue(CustomInputSelectorView.DEFAULT_VALUE);
         Calendar cal = Calendar.getInstance();
         // initialize date picker
         DatePickerDialog dpd = DatePickerDialog.newInstance(

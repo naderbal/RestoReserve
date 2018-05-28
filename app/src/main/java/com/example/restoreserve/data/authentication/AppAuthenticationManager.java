@@ -8,15 +8,21 @@ import com.example.restoreserve.data.StorageKeys;
 import com.example.restoreserve.data.restaurant.model.Restaurant;
 import com.example.restoreserve.data.session.AppSessionManager;
 import com.example.restoreserve.data.user.User;
+import com.example.restoreserve.utils.DateHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import rx.Single;
 
@@ -124,7 +130,7 @@ public class AppAuthenticationManager {
                             FirestoreManager.getInstance().getFirestoreInstance()
                                     .collection("restaurants")
                                     .document(id)
-                                    .set(updatedRestaurant.toMap(id), SetOptions.merge())
+                                    .set(updatedRestaurant.toEditMap(id), SetOptions.merge())
                                     .addOnCompleteListener(task -> {
                                         // check if profile set
                                         if (task.isSuccessful()) {
@@ -352,6 +358,11 @@ public class AppAuthenticationManager {
             // Initialize Firestore
             final HashMap<String, Object> map = restaurant.toMap(id);
             map.put(StorageKeys.IS_APPROVED, false);
+            map.put(StorageKeys.IS_PAID, false);
+//            final Date time = Calendar.getInstance().getTime();
+//            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.ENGLISH);
+//            sdf.format(time);
+            map.put("expire_date", FieldValue.serverTimestamp());
             FirebaseFirestore.getInstance()
                     .collection("restaurants")
                     .document(id)

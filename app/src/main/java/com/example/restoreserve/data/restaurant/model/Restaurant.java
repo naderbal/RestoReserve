@@ -28,6 +28,7 @@ public class Restaurant implements Serializable {
     private int confirmationDelayMins;
     private ArrayList<Table> tables;
     private boolean isApproved;
+    private boolean isPaid;
 
     public Restaurant(String name,
                       String phoneNumber,
@@ -92,6 +93,9 @@ public class Restaurant implements Serializable {
         }
         if (document.contains(StorageKeys.IS_APPROVED)) {
             this.isApproved = document.getBoolean(StorageKeys.IS_APPROVED);
+        }
+        if (document.contains(StorageKeys.IS_PAID)) {
+            this.isPaid = document.getBoolean(StorageKeys.IS_PAID);
         }
         if (document.contains(StorageKeys.TABLES)) {
             final ArrayList<HashMap<String, Object>> tab = (ArrayList<HashMap<String, Object>>) document.getData().get(StorageKeys.TABLES);
@@ -225,7 +229,24 @@ public class Restaurant implements Serializable {
         HashMap<String, Object> map = new HashMap<>();
         map.put(StorageKeys.ID, id);
         map.put(StorageKeys.NAME, name);
-        map.put(StorageKeys.EMAIL, email);
+        if(email != null) map.put(StorageKeys.EMAIL, email);
+        map.put(StorageKeys.PHONE_NUMBER, phoneNumber);
+        map.put(StorageKeys.WEBSITE, website);
+        map.put(StorageKeys.ADDRESS, address);
+        map.put(StorageKeys.BRANCH, branch);
+        map.put(StorageKeys.OPENING_HOUR, openingHour);
+        map.put(StorageKeys.CLOSING_HOUR, closingHour);
+        map.put(StorageKeys.TABLES_PIC_URL, tablesPicUrl);
+        map.put(StorageKeys.TABLES_COUNT, tablesCount);
+        map.put(StorageKeys.TABLES, getFormatedTables());
+        map.put(StorageKeys.CONFIRMATION_DELAY_MINS, confirmationDelayMins);
+        return map;
+    }
+
+    public HashMap<String, Object> toEditMap(@NonNull String id) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(StorageKeys.ID, id);
+        map.put(StorageKeys.NAME, name);
         map.put(StorageKeys.PHONE_NUMBER, phoneNumber);
         map.put(StorageKeys.WEBSITE, website);
         map.put(StorageKeys.ADDRESS, address);
